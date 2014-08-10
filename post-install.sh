@@ -6,13 +6,14 @@ git config --global url.https://.insteadof git://
 git clone https://github.com/openstack-dev/devstack.git
 ./devstack/tools/create-stack-user.sh
 
+token=`openssl rand -hex 10`
 cat <<EOL > devstack/local.conf
 [[local|localrc]]
 ADMIN_PASSWORD=password
 DATABASE_PASSWORD=password
 RABBIT_PASSWORD=password
 SERVICE_PASSWORD=password
-SERVICE_TOKEN=a682f596-76f3-11e3-b3b2-e716f9080d50
+SERVICE_TOKEN=${token}
 EOL
 
 for arg in $@ 
