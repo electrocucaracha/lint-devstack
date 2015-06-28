@@ -1,8 +1,11 @@
 #!/bin/bash
 
-apt-get install -qqy git
-git config --global url.https://.insteadof git:// 
+sed -i "s/10.0.2.3/8.8.8.8/g" /etc/resolv.conf
 
+rm -rf /opt/stack
+apt-get install -qqy git
+
+git config --global url.https://.insteadof git://
 git clone https://github.com/openstack-dev/devstack.git
 ./devstack/tools/create-stack-user.sh
 
@@ -35,12 +38,19 @@ do
 	  cp barbican/contrib/devstack/extras.d/70-barbican.sh devstack/extras.d/
 	  echo "ENABLED_SERVICES+=,barbican" >> devstack/local.conf ;;
 	"trove" )
-	  echo "ENABLED_SERVICES+=,trove,tr-api,tr-tmgr,tr-cond" >> devstack/local.conf ;;
+          echo "ENABLED_SERVICES+=,trove,tr-api,tr-tmgr,tr-cond" >> devstack/local.conf ;;
 	"sahara" )
 	  echo "ENABLED_SERVICES+=,sahara" >> devstack/local.conf ;;
-        esac
+	"docker" )
+	  echo "VIRT_DRIVER=docker" >> devstack/local.conf ;;
+        "osprofiler" )
+          echo "CEILOMETER_NOTIFICATION_TOPICS=notifications,profiler" >> devstack/local.conf ;;
+   esac
 done
 
 chown -R stack:stack devstack/
 cd devstack
+su stack -c "git config --global url.https://.insteadof git://"
 su stack -c "./stack.sh"
+
+# script /dev/null
