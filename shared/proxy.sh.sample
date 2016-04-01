@@ -1,0 +1,3 @@
+export http_proxy=http://myproxy.com
+export https_proxy=http://myproxy.com
+export no_proxy=localhost,127.0.0.0/8,192.168.121.0/24,10.0.0.0/16,$HOSTNAME

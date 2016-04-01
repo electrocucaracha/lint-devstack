@@ -1,18 +1,27 @@
-# Minimal Devstack
+vagrant-minimal-devstack
+========================
 
-This repo pretents to contain the minimal steps possible to create a devstack environment within a vagrant box.
+This vagrant project pretends to collect information about setting up development environments sharing source code folders
+to manage them internally.  For more information about Devstack, take a look of [the official site] (http://docs.openstack.org/developer/devstack/).
 
-### Requirements:
+## Requirements:
 
-* Vagrant
-* VirtualBox
+  * Vagrant
+  * VirtualBox or Libvirt
 
-### Running:
+## Steps for execution:
 
-    git clone https://github.com/electrocucaracha/vagrant-minimal-devstack.git
-    cd vagrant-minimal-devstack
-    vagrant up
+    $ git clone https://github.com/electrocucaracha/vagrant-minimal-devstack.git
+    $ cd vagrant-minimal-devstack
+    $ ./create.sh
 
-### Destroy:
+**Firewalld**
 
-    vagrant destroy
+OpenStack source code folders are shared with the host using NFS provided by the host machine. This service requires
+a specific rule to be setup in firewalld service.  In order to allow traffic between host and guest this service must
+be configured properly:
+
+    # firewall-cmd --permanent --add-service rpc-bind
+    # firewall-cmd --permanent --add-service nfs
+
+This can be verified by running `# firewall-cmd --list-all`

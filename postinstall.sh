@@ -1,11 +1,30 @@
 #!/bin/bash
 
-sed -i "s/10.0.2.3/8.8.8.8/g" /etc/resolv.conf
+# Setup proxy variables
 
-rm -rf /opt/stack
-apt-get install -qqy git
+if [ -f /home/vagrant/shared/sources.list ]
+then
+  cp /home/vagrant/shared/sources.list /etc/apt/sources.list
+fi
 
-git config --global url.https://.insteadof git://
+if [ -f /home/vagrant/shared/proxy.sh ]
+then
+  source /home/vagrant/shared/proxy.sh
+
+  echo "export http_proxy=${http_proxy}" >> /etc/bash.bashrc
+  echo "export https_proxy=${https_proxy}" >> /etc/bash.bashrc
+  echo "export no_proxy=${no_proxy}" >> /etc/bash.bashrc
+fi
+
+apt-get update -y
+apt-get install -y sudo git
+
+cat <<EOL > /etc/gitconfig
+[url "https://"]
+        insteadof = git://
+EOL
+
+
 git clone https://github.com/openstack-dev/devstack.git
 ./devstack/tools/create-stack-user.sh
 
@@ -17,11 +36,21 @@ DATABASE_PASSWORD=password
 RABBIT_PASSWORD=password
 SERVICE_PASSWORD=password
 SERVICE_TOKEN=${token}
+ENABLE_DEBUG_LOG_LEVEL=False
+DATA_DIR=/home/vagrant/data
 EOL
 
 for arg in $@ 
 do
    case $arg in
+        "neutron" )
+          echo "ENABLED_SERVICES+=,q-svc,q-agt,q-dhcp,q-l3,q-meta">> devstack/local.conf
+          echo "disable_service n-net">> devstack/local.conf
+          echo "disable_service tempest">> devstack/local.conf;;
+        "swift" )
+          echo "ENABLED_SERVICES+=,s-proxy,s-object,s-container,s-account">> devstack/local.conf ;;
+        "heat" )
+          echo "ENABLED_SERVICES+=heat,h-api,h-api-cfn,h-api-cw,h-eng">> devstack/local.conf ;;   
         "marconi" )
           echo "ENABLED_SERVICES+=,marconi-server">> devstack/local.conf ;;
         "ceilometer" )
@@ -48,9 +77,13 @@ do
    esac
 done
 
+## OSIC - Customization
+
+
+## Devstack execution
+
 chown -R stack:stack devstack/
 cd devstack
-su stack -c "git config --global url.https://.insteadof git://"
 su stack -c "./stack.sh"
 
 # script /dev/null
