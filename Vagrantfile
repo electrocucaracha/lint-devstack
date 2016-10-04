@@ -5,6 +5,8 @@
 # configures the configuration version (we support older styles for
 # backwards compatibility). Please don't change it unless you know what
 # you're doing.
+Vagrant.require_version ">= 1.8.4"
+
 Vagrant.configure(2) do |config|
   config.vm.box = 'sputnik13/trusty64'
   config.vm.hostname = 'devstack'
@@ -26,18 +28,20 @@ Vagrant.configure(2) do |config|
   end
 
   config.vm.provider 'virtualbox' do |v|
-    v.customize ['modifyvm', :id, '--memory', 1024 * 4 ]
+    v.customize ['modifyvm', :id, '--memory', 1024 * 6 ]
+    v.customize ["modifyvm", :id, "--cpus", 2]
   end
 
   config.vm.provider 'libvirt' do |v|
-    v.memory = 1024 * 4
+    v.memory = 1024 * 6
+    v.cpus = 2
     v.nested = true
     v.cpu_mode = 'host-passthrough'
   end
 
   config.vm.provision 'shell' do |s|
     s.path = 'postinstall.sh'
-    s.args = ['neutron']
+    s.args = ['neutron', 'python-openstackclient']
   end
 
 end

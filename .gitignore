@@ -1,1 +1,3 @@
-*.yaml.stack/.vagrant/
+*.yaml
+stack/
+.vagrant/
