@@ -51,6 +51,9 @@ do
           echo "ENABLED_SERVICES+=,q-lbaasv2">> devstack/local.conf
           echo "enable_plugin neutron-lbaas-dashboard https://git.openstack.org/openstack/neutron-lbaas-dashboard">> devstack/local.conf
           echo "enable_plugin neutron-lbaas https://git.openstack.org/openstack/neutron-lbaas">> devstack/local.conf ;;
+        "magnum" ) # magnum requires barbican, heat, neutron-lbaas and octavia
+          echo "enable_plugin magnum-ui https://git.openstack.org/openstack/magnum-ui">> devstack/local.conf
+          echo "enable_plugin magnum https://git.openstack.org/openstack/magnum">> devstack/local.conf ;;
         "octavia" )
           echo "ENABLED_SERVICES+=,octavia,o-cw,o-hk,o-hm,o-api">> devstack/local.conf
           echo "enable_plugin octavia https://git.openstack.org/openstack/octavia">> devstack/local.conf ;;
@@ -60,7 +63,8 @@ do
         "horizon" )
           echo "ENABLED_SERVICES+=horizon">> devstack/local.conf ;;
         "heat" )
-          echo "ENABLED_SERVICES+=heat,h-api,h-api-cfn,h-api-cw,h-eng">> devstack/local.conf ;;   
+          echo "ENABLED_SERVICES+=heat,h-api,h-api-cfn,h-api-cw,h-eng">> devstack/local.conf
+          echo "enable_plugin heat https://git.openstack.org/openstack/heat.git" >> devstack/local.conf ;;
         "marconi" )
           echo "ENABLED_SERVICES+=,marconi-server">> devstack/local.conf ;;
         "ceilometer" )
@@ -71,17 +75,14 @@ do
           cp rally/contrib/devstack/extras.d/70-rally.sh devstack/extras.d/
           echo "ENABLED_SERVICES+=,rally" >> devstack/local.conf ;;
 	"barbican" )
-	  apt-get install -qqy libssl-dev
-	  git clone https://github.com/openstack/barbican.git
-	  cp barbican/contrib/devstack/lib/barbican devstack/lib/
-	  cp barbican/contrib/devstack/extras.d/70-barbican.sh devstack/extras.d/
-	  echo "ENABLED_SERVICES+=,barbican" >> devstack/local.conf ;;
+          echo "ENABLED_SERVICES+=,barbican" >> devstack/local.conf
+          echo "enable_plugin barbican https://git.openstack.org/openstack/barbican.git" >> devstack/local.conf ;;
 	"trove" )
           echo "ENABLED_SERVICES+=,trove,tr-api,tr-tmgr,tr-cond" >> devstack/local.conf ;;
-	"sahara" ) # Sahara requires swift
+	"sahara" ) # sahara requires swift
           echo "enable_plugin sahara-dashboard git://git.openstack.org/openstack/sahara-dashboard">> devstack/local.conf
           echo "enable_plugin sahara git://git.openstack.org/openstack/sahara">> devstack/local.conf ;;
-	"cloudkitty" ) # CloudKitty requires ceilometer and horizon
+	"cloudkitty" ) # cloudKitty requires ceilometer and horizon
           echo "enable_plugin cloudkitty https://github.com/openstack/cloudkitty master">> devstack/local.conf
           echo "enable_service ck-api ck-proc">> devstack/local.conf ;;
 	"docker" )
