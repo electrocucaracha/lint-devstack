@@ -11,16 +11,13 @@ fi
 apt-get update -y
 apt-get install -y sudo git
 
-cat <<EOL > /home/vagrant/.gitconfig
-[url "https://"]
-        insteadof = git://
-EOL
-
-git clone https://github.com/openstack-dev/devstack.git
+cd /opt/stack
+git clone https://git.openstack.org/openstack-dev/devstack.git
 
 token=`openssl rand -hex 10`
 cat <<EOL > devstack/local.conf
 [[local|localrc]]
+HOST_IP=$(ip route get 8.8.8.8 | awk '{ print $NF; exit }')
 ADMIN_PASSWORD=${PASSWORD}
 DATABASE_PASSWORD=${PASSWORD}
 RABBIT_PASSWORD=${PASSWORD}
@@ -28,8 +25,10 @@ SERVICE_PASSWORD=${PASSWORD}
 SERVICE_TOKEN=${token}
 ENABLE_DEBUG_LOG_LEVEL=False
 DATA_DIR=/home/vagrant/data
+GIT_BASE=https://git.openstack.org
 EOL
 
+# http://docs.openstack.org/developer/devstack/plugin-registry.html
 for arg in $@ 
 do
    case $arg in
@@ -54,6 +53,9 @@ do
         "magnum" ) # magnum requires barbican, heat, neutron-lbaas and octavia
           echo "enable_plugin magnum-ui https://git.openstack.org/openstack/magnum-ui">> devstack/local.conf
           echo "enable_plugin magnum https://git.openstack.org/openstack/magnum">> devstack/local.conf ;;
+        "designate" )
+          echo "ENABLED_SERVICES+=,designate,designate-central,designate-api,designate-pool-manager,designate-zone-manager,designate-mdns">> devstack/local.conf
+          echo "enable_plugin designate https://git.openstack.org/openstack/designate">> devstack/local.conf ;;
         "octavia" )
           echo "ENABLED_SERVICES+=,octavia,o-cw,o-hk,o-hm,o-api">> devstack/local.conf
           echo "enable_plugin octavia https://git.openstack.org/openstack/octavia">> devstack/local.conf ;;
@@ -63,11 +65,11 @@ do
         "horizon" )
           echo "ENABLED_SERVICES+=horizon">> devstack/local.conf ;;
         "heat" )
-          echo "ENABLED_SERVICES+=heat,h-api,h-api-cfn,h-api-cw,h-eng">> devstack/local.conf
           echo "enable_plugin heat https://git.openstack.org/openstack/heat.git" >> devstack/local.conf ;;
         "marconi" )
           echo "ENABLED_SERVICES+=,marconi-server">> devstack/local.conf ;;
         "ceilometer" )
+          echo "CEILOMETER_BACKEND=mongodb">> devstack/local.conf
           echo "enable_plugin ceilometer https://git.openstack.org/openstack/ceilometer.git" >> devstack/local.conf ;;
         "rally" )
           git clone https://github.com/stackforge/rally
@@ -75,7 +77,6 @@ do
           cp rally/contrib/devstack/extras.d/70-rally.sh devstack/extras.d/
           echo "ENABLED_SERVICES+=,rally" >> devstack/local.conf ;;
 	"barbican" )
-          echo "ENABLED_SERVICES+=,barbican" >> devstack/local.conf
           echo "enable_plugin barbican https://git.openstack.org/openstack/barbican.git" >> devstack/local.conf ;;
 	"trove" )
           echo "ENABLED_SERVICES+=,trove,tr-api,tr-tmgr,tr-cond" >> devstack/local.conf ;;

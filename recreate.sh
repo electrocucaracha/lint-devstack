@@ -3,7 +3,7 @@
 ./cleanup.sh
 vagrant up
 
-if [ -z "$1" ]; then
+if [ -n "$1" ]; then
   git config --global --add gitreview.username $1;
 fi
 
@@ -16,7 +16,6 @@ do
   pushd $folder
   ln -s ../pre-commit  ./.git/hooks/pre-commit
   git review -s &
-  pyvenv .venv
   python ./tools/install_venv.py &
   popd
 done
