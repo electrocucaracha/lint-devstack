@@ -1,6 +1,6 @@
 #!/bin/bash
 
-./cleanup.sh
+vagrant destroy -f
 vagrant up
 
 if [ -n "$1" ]; then

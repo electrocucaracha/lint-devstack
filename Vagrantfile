@@ -8,11 +8,11 @@
 Vagrant.require_version ">= 1.8.4"
 
 Vagrant.configure(2) do |config|
-  config.vm.box = 'sputnik13/trusty64'
+  config.vm.box = 'wholebits/ubuntu16.04-64'
   config.vm.hostname = 'devstack'
   config.vm.network :private_network, ip: '192.168.50.8'
 
-  config.vm.network :forwarded_port, guest: 80, host: 8880
+  config.vm.network :forwarded_port, guest: 80, host: 8888
 
   config.vm.synced_folder './shared/', '/home/vagrant/shared'
   config.vm.synced_folder './stack', '/opt/stack'
@@ -28,12 +28,12 @@ Vagrant.configure(2) do |config|
   end
 
   config.vm.provider 'virtualbox' do |v|
-    v.customize ['modifyvm', :id, '--memory', 1024 * 6 ]
+    v.customize ['modifyvm', :id, '--memory', 1024 * 8 ]
     v.customize ["modifyvm", :id, "--cpus", 2]
   end
 
   config.vm.provider 'libvirt' do |v|
-    v.memory = 1024 * 6
+    v.memory = 1024 * 8
     v.cpus = 2
     v.nested = true
     v.cpu_mode = 'host-passthrough'
@@ -41,7 +41,7 @@ Vagrant.configure(2) do |config|
 
   config.vm.provision 'shell' do |s|
     s.path = 'postinstall.sh'
-    s.args = ['neutron', 'python-openstackclient']
+    s.args = ['python-openstackclient']
   end
 
 end

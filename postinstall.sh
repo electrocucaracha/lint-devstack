@@ -26,18 +26,14 @@ SERVICE_TOKEN=${token}
 ENABLE_DEBUG_LOG_LEVEL=False
 DATA_DIR=/home/vagrant/data
 GIT_BASE=https://git.openstack.org
+USE_PYTHON3=True
+PYTHON3_VERSION=3
 EOL
 
 # http://docs.openstack.org/developer/devstack/plugin-registry.html
 for arg in $@ 
 do
    case $arg in
-        "tempest" )
-          echo "ENABLED_SERVICES+=,tempest">> devstack/local.conf ;;
-        "neutron" )
-          echo "ENABLED_SERVICES+=,q-svc,q-agt,q-dhcp,q-l3,q-meta">> devstack/local.conf
-          echo "Q_USE_SECGROUP=True">> devstack/local.conf
-          echo "disable_service n-net">> devstack/local.conf ;; # Do not use Nova-Network
         "neutron-metering" )
           echo "ENABLED_SERVICES+=,q-metering">> devstack/local.conf ;;
         "neutron-vpnaas" )
@@ -69,7 +65,7 @@ do
         "marconi" )
           echo "ENABLED_SERVICES+=,marconi-server">> devstack/local.conf ;;
         "ceilometer" )
-          echo "CEILOMETER_BACKEND=mongodb">> devstack/local.conf
+          echo "ENABLED_SERVICES+=,ceilometer-api">> devstack/local.conf
           echo "enable_plugin ceilometer https://git.openstack.org/openstack/ceilometer.git" >> devstack/local.conf ;;
         "rally" )
           git clone https://github.com/stackforge/rally
@@ -101,6 +97,6 @@ chown -R vagrant:vagrant devstack/
 cd devstack
 su vagrant -c "./stack.sh"
 
-echo OFFLINE=True >> local.conf
+echo "# OFFLINE=True" >> local.conf
 
 # script /dev/null
