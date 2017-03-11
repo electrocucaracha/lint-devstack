@@ -1,3 +1,5 @@
-*.yaml
-stack/
 .vagrant/
+*swp
+stack/
+.DS_Store
+.tox/
