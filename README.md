@@ -1,6 +1,8 @@
 Minimal Devstack
 ================
 
+[![Build Status](https://api.travis-ci.org/electrocucaracha/vagrant-minimal-devstack.svg?branch=master)](https://api.travis-ci.org/electrocucaracha/vagrant-minimal-devstack)
+
 This vagrant project pretends to collect information about setting up
 development environments. It also is configured to share the source code
 to host machine. As result, it's possible to run and test things isolated
