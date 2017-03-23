@@ -11,7 +11,6 @@ apt-get update -y
 apt-get install -y sudo git
 
 cd /opt/stack
-rm -rf logs/
 if [ ! -d /opt/stack/devstack ]; then
     git clone https://git.openstack.org/openstack-dev/devstack.git
 fi
@@ -31,6 +30,9 @@ DATA_DIR=/home/vagrant/data
 GIT_BASE=https://git.openstack.org
 USE_PYTHON3=True
 PYTHON3_VERSION=3
+LOGDIR=/tmp/logs
+REQUIREMENTS_DIR=/home/vagrant/requirements
+SERVICE_DIR=/tmp/status
 EOL
 
     # http://docs.openstack.org/developer/devstack/plugin-registry.html
@@ -100,5 +102,7 @@ fi
 chown -R vagrant:vagrant devstack/
 cd devstack
 su vagrant -c "./stack.sh"
+
+echo "source /opt/stack/devstack/openrc admin admin" >> /home/vagrant/.bashrc
 
 # script /dev/null
