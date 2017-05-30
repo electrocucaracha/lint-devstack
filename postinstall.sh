@@ -81,8 +81,8 @@ EOL
             "trove" )
                 echo "ENABLED_SERVICES+=,trove,tr-api,tr-tmgr,tr-cond" >> devstack/local.conf ;;
             "sahara" ) # sahara requires swift
-                echo "enable_plugin sahara-dashboard git://git.openstack.org/openstack/sahara-dashboard">> devstack/local.conf
-                echo "enable_plugin sahara git://git.openstack.org/openstack/sahara">> devstack/local.conf ;;
+                echo "enable_plugin sahara-dashboard https://git.openstack.org/openstack/sahara-dashboard">> devstack/local.conf
+                echo "enable_plugin sahara https://git.openstack.org/openstack/sahara">> devstack/local.conf ;;
             "cloudkitty" ) # cloudKitty requires ceilometer and horizon
                 echo "enable_plugin cloudkitty https://github.com/openstack/cloudkitty master">> devstack/local.conf
                 echo "enable_service ck-api ck-proc">> devstack/local.conf ;;
@@ -94,6 +94,8 @@ EOL
                 echo "LIBS_FROM_GIT+=python-neutronclient" >> devstack/local.conf ;;
             "python-openstackclient" )
                 echo "LIBS_FROM_GIT+=python-openstackclient" >> devstack/local.conf ;;
+            "tricircle" )
+                echo "enable_plugin tricircle https://github.com/openstack/tricircle/" >> devstack/local.conf ;;
         esac
     done
     echo "# OFFLINE=True" >> local.conf
