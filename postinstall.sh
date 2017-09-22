@@ -1,10 +1,11 @@
 #!/bin/bash
 
 PASSWORD='password'
+export NEUTRON_CREATE_INITIAL_NETWORKS=False
 
 # Setup proxy variables
-if [ -f /home/vagrant/shared/sources.list ]; then
-    cp /home/vagrant/shared/sources.list /etc/apt/sources.list
+if [ -f /home/ubuntu/shared/sources.list ]; then
+    cp /home/ubuntu/shared/sources.list /etc/apt/sources.list
 fi
 
 apt-get update -y
@@ -26,12 +27,12 @@ RABBIT_PASSWORD=${PASSWORD}
 SERVICE_PASSWORD=${PASSWORD}
 SERVICE_TOKEN=${token}
 ENABLE_DEBUG_LOG_LEVEL=False
-DATA_DIR=/home/vagrant/data
+DATA_DIR=/home/ubuntu/data
 GIT_BASE=https://git.openstack.org
 USE_PYTHON3=True
 PYTHON3_VERSION=3
 LOGDIR=/tmp/logs
-REQUIREMENTS_DIR=/home/vagrant/requirements
+REQUIREMENTS_DIR=/home/ubuntu/requirements
 SERVICE_DIR=/tmp/status
 EOL
 
@@ -81,8 +82,8 @@ EOL
             "trove" )
                 echo "ENABLED_SERVICES+=,trove,tr-api,tr-tmgr,tr-cond" >> devstack/local.conf ;;
             "sahara" ) # sahara requires swift
-                echo "enable_plugin sahara-dashboard https://git.openstack.org/openstack/sahara-dashboard">> devstack/local.conf
-                echo "enable_plugin sahara https://git.openstack.org/openstack/sahara">> devstack/local.conf ;;
+                echo "enable_plugin sahara-dashboard git://git.openstack.org/openstack/sahara-dashboard">> devstack/local.conf
+                echo "enable_plugin sahara git://git.openstack.org/openstack/sahara">> devstack/local.conf ;;
             "cloudkitty" ) # cloudKitty requires ceilometer and horizon
                 echo "enable_plugin cloudkitty https://github.com/openstack/cloudkitty master">> devstack/local.conf
                 echo "enable_service ck-api ck-proc">> devstack/local.conf ;;
@@ -94,17 +95,15 @@ EOL
                 echo "LIBS_FROM_GIT+=python-neutronclient" >> devstack/local.conf ;;
             "python-openstackclient" )
                 echo "LIBS_FROM_GIT+=python-openstackclient" >> devstack/local.conf ;;
-            "tricircle" )
-                echo "enable_plugin tricircle https://github.com/openstack/tricircle/" >> devstack/local.conf ;;
         esac
     done
     echo "# OFFLINE=True" >> local.conf
 fi
 
-chown -R vagrant:vagrant devstack/
+chown -R ubuntu:ubuntu devstack/
 cd devstack
-su vagrant -c "./stack.sh"
+su ubuntu -c "./stack.sh"
 
-echo "source /opt/stack/devstack/openrc admin admin" >> /home/vagrant/.bashrc
+echo "source /opt/stack/devstack/openrc admin admin" >> /home/ubuntu/.bashrc
 
 # script /dev/null

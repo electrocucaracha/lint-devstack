@@ -8,14 +8,14 @@
 Vagrant.require_version ">= 1.8.4"
 
 Vagrant.configure(2) do |config|
-  config.vm.box = 'wholebits/ubuntu16.04-64'
+  config.vm.box = 'ubuntu/xenial64'
   config.vm.hostname = 'devstack'
   config.vm.network :private_network, ip: '192.168.50.8'
 
   config.vm.network :forwarded_port, guest: 80, host: 8888
 
-  config.vm.synced_folder './shared/', '/home/vagrant/shared'
-  config.vm.synced_folder './stack', '/opt/stack', create: true
+  config.vm.synced_folder './shared/', '/home/ubuntu/shared'
+  config.vm.synced_folder './stack', '/opt/stack'
 
   if ENV['http_proxy'] != nil and ENV['https_proxy'] != nil and ENV['no_proxy'] != nil 
     if not Vagrant.has_plugin?('vagrant-proxyconf')
