@@ -1,15 +1,26 @@
 #!/bin/bash
+# SPDX-license-identifier: Apache-2.0
+##############################################################################
+# Copyright (c) 2018
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Apache License, Version 2.0
+# which accompanies this distribution, and is available at
+# http://www.apache.org/licenses/LICENSE-2.0
+##############################################################################
+
+set -o errexit
+set -o nounset
+set -o pipefail
 
 PASSWORD='password'
-export NEUTRON_CREATE_INITIAL_NETWORKS=False
 
 # Setup proxy variables
-if [ -f /home/ubuntu/shared/sources.list ]; then
-    cp /home/ubuntu/shared/sources.list /etc/apt/sources.list
+if [ -f /home/vagrant/shared/sources.list ]; then
+    cp /home/vagrant/shared/sources.list /etc/apt/sources.list
 fi
 
-apt-get update -y
-apt-get install -y sudo git
+sudo apt-get update -y
+sudo apt-get install -y sudo git
 
 cd /opt/stack
 if [ ! -d /opt/stack/devstack ]; then
@@ -27,12 +38,12 @@ RABBIT_PASSWORD=${PASSWORD}
 SERVICE_PASSWORD=${PASSWORD}
 SERVICE_TOKEN=${token}
 ENABLE_DEBUG_LOG_LEVEL=False
-DATA_DIR=/home/ubuntu/data
+DATA_DIR=/home/vagrant/data
 GIT_BASE=https://git.openstack.org
 USE_PYTHON3=True
 PYTHON3_VERSION=3
 LOGDIR=/tmp/logs
-REQUIREMENTS_DIR=/home/ubuntu/requirements
+REQUIREMENTS_DIR=/home/vagrant/requirements
 SERVICE_DIR=/tmp/status
 EOL
 
@@ -100,10 +111,9 @@ EOL
     echo "# OFFLINE=True" >> local.conf
 fi
 
-chown -R ubuntu:ubuntu devstack/
 cd devstack
-su ubuntu -c "./stack.sh"
+./stack.sh
 
-echo "source /opt/stack/devstack/openrc admin admin" >> /home/ubuntu/.bashrc
+echo "source /opt/stack/devstack/openrc admin admin" >> /home/vagrant/.bashrc
 
 # script /dev/null
