@@ -8,160 +8,121 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
 
+set -o errexit
 set -o nounset
 set -o pipefail
 
-vagrant_version=2.1.2
-if ! $(vagrant version &>/dev/null); then
-    enable_vagrant_install=true
-else
-    if [[ "$vagrant_version" != "$(vagrant version | awk 'NR==1{print $3}')" ]]; then
-        enable_vagrant_install=true
-    fi
-fi
+PASSWORD='password'
 
-function usage {
-    cat <<EOF
-usage: $0 -p <PROVIDER>
-Installation of vagrant and its dependencies in Linux OS
-
-Argument:
-    -p  Vagrant provider
-EOF
-}
-
-while getopts ":p:" OPTION; do
-    case $OPTION in
-    p)
-        provider=$OPTARG
-        ;;
-    \?)
-        usage
-        exit 1
-        ;;
-    esac
-done
-if [[ -z "${provider+x}" ]]; then
-    usage
-    exit 1
-fi
-
-case $provider in
-    "virtualbox" | "libvirt" )
-        export VAGRANT_DEFAULT_PROVIDER=${provider}
-        ;;
-    * )
-        usage
-        exit 1
-esac
+# shellcheck disable=SC1091
 source /etc/os-release || source /usr/lib/os-release
-
-libvirt_group="libvirt"
-packages=()
 case ${ID,,} in
-    *suse)
-    INSTALLER_CMD="sudo -H -E zypper -q install -y --no-recommends"
-
-    # Vagrant installation
-    if [[ "${enable_vagrant_install+x}" ]]; then
-        vagrant_pgp="pgp_keys.asc"
-        wget -q https://keybase.io/hashicorp/$vagrant_pgp
-        wget -q https://releases.hashicorp.com/vagrant/$vagrant_version/vagrant_${vagrant_version}_x86_64.rpm
-        gpg --quiet --with-fingerprint $vagrant_pgp
-        sudo rpm --import $vagrant_pgp
-        sudo rpm --checksig vagrant_${vagrant_version}_x86_64.rpm
-        sudo rpm --install vagrant_${vagrant_version}_x86_64.rpm
-        rm vagrant_${vagrant_version}_x86_64.rpm
-        rm $vagrant_pgp
-    fi
-
-    case $VAGRANT_DEFAULT_PROVIDER in
-        virtualbox)
-        wget -q http://download.virtualbox.org/virtualbox/rpm/opensuse/$VERSION/virtualbox.repo -P /etc/zypp/repos.d/
-        $INSTALLER_CMD --enablerepo=epel dkms
-        wget -q https://www.virtualbox.org/download/oracle_vbox.asc -O- | rpm --import -
-        packages+=(VirtualBox-5.1)
-        ;;
-        libvirt)
-        # vagrant-libvirt dependencies
-        packages+=(qemu libvirt libvirt-devel ruby-devel gcc qemu-kvm zlib-devel libxml2-devel libxslt-devel make)
-        # NFS
-        packages+=(nfs-kernel-server)
-        ;;
-    esac
-    sudo zypper -n ref
-    ;;
-
     ubuntu|debian)
-    libvirt_group="libvirtd"
-    INSTALLER_CMD="sudo -H -E apt-get -y -q=3 install"
-
-    # Vagrant installation
-    if [[ "${enable_vagrant_install+x}" ]]; then
-        wget -q https://releases.hashicorp.com/vagrant/$vagrant_version/vagrant_${vagrant_version}_x86_64.deb
-        sudo dpkg -i vagrant_${vagrant_version}_x86_64.deb
-        rm vagrant_${vagrant_version}_x86_64.deb
-    fi
-
-    case $VAGRANT_DEFAULT_PROVIDER in
-        virtualbox)
-        echo "deb http://download.virtualbox.org/virtualbox/debian trusty contrib" >> /etc/apt/sources.list
-        wget -q https://www.virtualbox.org/download/oracle_vbox_2016.asc -O- | sudo apt-key add -
-        wget -q https://www.virtualbox.org/download/oracle_vbox.asc -O- | sudo apt-key add -
-        packages+=(virtualbox-5.1 dkms)
-        ;;
-        libvirt)
-        # vagrant-libvirt dependencies
-        packages+=(qemu libvirt-bin ebtables dnsmasq libxslt-dev libxml2-dev libvirt-dev zlib1g-dev ruby-dev)
-        # NFS
-        packages+=(nfs-kernel-server)
-        ;;
-    esac
-    sudo apt-get update
+        sudo apt-get update
+        sudo apt-get install -y -qq -o=Dpkg::Use-Pty=0 curl
     ;;
-
-    rhel|centos|fedora)
-    PKG_MANAGER=$(which dnf || which yum)
-    sudo $PKG_MANAGER updateinfo
-    INSTALLER_CMD="sudo -H -E ${PKG_MANAGER} -q -y install"
-
-    # Vagrant installation
-    if [[ "${enable_vagrant_install+x}" ]]; then
-        wget -q https://releases.hashicorp.com/vagrant/$vagrant_version/vagrant_${vagrant_version}_x86_64.rpm
-        $INSTALLER_CMD vagrant_${vagrant_version}_x86_64.rpm
-        rm vagrant_${vagrant_version}_x86_64.rpm
-    fi
-
-    case $VAGRANT_DEFAULT_PROVIDER in
-        virtualbox)
-        wget -q http://download.virtualbox.org/virtualbox/rpm/rhel/virtualbox.repo -P /etc/yum.repos.d
-        $INSTALLER_CMD --enablerepo=epel dkms
-        wget -q https://www.virtualbox.org/download/oracle_vbox.asc -O- | rpm --import -
-        packages+=(VirtualBox-5.1)
-        ;;
-        libvirt)
-        # vagrant-libvirt dependencies
-        packages+=(qemu libvirt libvirt-devel ruby-devel gcc qemu-kvm)
-        # NFS
-        packages+=(nfs-utils nfs-utils-lib)
-        ;;
-    esac
-    ;;
-
 esac
 
-if ! which pip; then
-    curl -sL https://bootstrap.pypa.io/get-pip.py | sudo python
+pkgs=""
+for pkg in sudo git; do
+if ! command -v "$pkg"; then
+    pkgs+=" $pkg"
 fi
-sudo pip install --upgrade pip
-sudo pip install tox
+done
+if [ -n "$pkgs" ]; then
+    curl -fsSL http://bit.ly/pkgInstall | PKG=$pkgs bash
+fi
 
-${INSTALLER_CMD} ${packages[@]}
-if [[ ${http_proxy+x} ]]; then
-    vagrant plugin install vagrant-proxyconf
+if [ ! -d /opt/stack/devstack ]; then
+    git clone --depth 1 https://opendev.org/openstack/devstack /opt/stack/devstack
 fi
-if [ $VAGRANT_DEFAULT_PROVIDER == libvirt ]; then
-    vagrant plugin install vagrant-libvirt
-    sudo usermod -a -G $libvirt_group $USER # This might require to reload user's group assigments
-    sudo systemctl restart libvirtd
+
+cd /opt/stack/devstack/
+if [ ! -f local.conf ]; then
+    cat <<EOL > local.conf
+[[local|localrc]]
+DATA_DIR=/home/vagrant/data
+SERVICE_DIR=/home/vagrant/status
+
+LOGFILE=\$DATA_DIR/logs/stack.log
+VERBOSE=True
+
+MYSQL_PASSWORD=${PASSWORD}
+DATABASE_PASSWORD=${PASSWORD}
+SERVICE_TOKEN=$(openssl rand -hex 10)
+SERVICE_PASSWORD=${PASSWORD}
+ADMIN_PASSWORD=${PASSWORD}
+RABBIT_PASSWORD=${PASSWORD}
+
+REQUIREMENTS_DIR=/home/vagrant/requirements
+disable_service tempest
+EOL
+
+    # http://docs.openstack.org/developer/devstack/plugin-registry.html
+    for arg in "$@"; do
+        case $arg in
+            "neutron-metering" )
+                echo "ENABLED_SERVICES+=,q-metering">> local.conf ;;
+            "neutron-vpnaas" )
+                echo "ENABLED_SERVICES+=,q-vpnaas">> local.conf
+                echo "enable_plugin neutron-vpnaas https://git.openstack.org/openstack/neutron-vpnaas">> local.conf ;;
+            "neutron-fwaas" )
+                echo "ENABLED_SERVICES+=,q-fwaas">> local.conf
+                echo "enable_plugin neutron-fwaas https://git.openstack.org/openstack/neutron-fwaas">> local.conf ;;
+            "neutron-lbaas" )
+                echo "ENABLED_SERVICES+=,q-lbaasv2">> local.conf
+                echo "enable_plugin neutron-lbaas-dashboard https://git.openstack.org/openstack/neutron-lbaas-dashboard">> local.conf
+                echo "enable_plugin neutron-lbaas https://git.openstack.org/openstack/neutron-lbaas">> local.conf ;;
+            "magnum" ) # magnum requires barbican, heat, neutron-lbaas and octavia
+                echo "enable_plugin magnum-ui https://git.openstack.org/openstack/magnum-ui">> local.conf
+                echo "enable_plugin magnum https://git.openstack.org/openstack/magnum">> local.conf ;;
+            "designate" )
+                echo "ENABLED_SERVICES+=,designate,designate-central,designate-api,designate-pool-manager,designate-zone-manager,designate-mdns">> local.conf
+                echo "enable_plugin designate https://git.openstack.org/openstack/designate">> local.conf ;;
+            "octavia" )
+                echo "ENABLED_SERVICES+=,octavia,o-cw,o-hk,o-hm,o-api">> local.conf
+                echo "enable_plugin octavia https://git.openstack.org/openstack/octavia">> local.conf ;;
+            "swift" )
+                echo "SWIFT_HASH=swift">> local.conf
+                echo "ENABLED_SERVICES+=,s-proxy,s-object,s-container,s-account">> local.conf ;;
+            "horizon" )
+                echo "ENABLED_SERVICES+=horizon">> local.conf ;;
+            "heat" )
+                echo "enable_plugin heat https://git.openstack.org/openstack/heat.git" >> local.conf ;;
+            "marconi" )
+                echo "ENABLED_SERVICES+=,marconi-server">> local.conf ;;
+            "ceilometer" )
+                echo "ENABLED_SERVICES+=,ceilometer-api">> local.conf
+                echo "enable_plugin ceilometer https://git.openstack.org/openstack/ceilometer.git" >> local.conf ;;
+            "rally" )
+                git clone --depth 1 https://github.com/stackforge/rally /tmp/rally
+                cp /tmp/rally/contrib/devstack/lib/rally lib/
+                cp /tmp/rally/contrib/devstack/extras.d/70-rally.sh extras.d/
+                echo "ENABLED_SERVICES+=,rally" >> local.conf ;;
+            "barbican" )
+                echo "enable_plugin barbican https://git.openstack.org/openstack/barbican.git" >> local.conf ;;
+            "trove" )
+                echo "ENABLED_SERVICES+=,trove,tr-api,tr-tmgr,tr-cond" >> local.conf ;;
+            "sahara" ) # sahara requires swift
+                echo "enable_plugin sahara-dashboard git://git.openstack.org/openstack/sahara-dashboard">> local.conf
+                echo "enable_plugin sahara git://git.openstack.org/openstack/sahara">> local.conf ;;
+            "cloudkitty" ) # cloudKitty requires ceilometer and horizon
+                echo "enable_plugin cloudkitty https://github.com/openstack/cloudkitty master">> local.conf
+                echo "enable_service ck-api ck-proc">> local.conf ;;
+            "docker" )
+                echo "VIRT_DRIVER=docker" >> local.conf ;;
+            "osprofiler" )
+                echo "CEILOMETER_NOTIFICATION_TOPICS=notifications,profiler" >> local.conf ;;
+            "python-neutronclient" )
+                echo "LIBS_FROM_GIT+=python-neutronclient" >> local.conf ;;
+            "python-openstackclient" )
+                echo "LIBS_FROM_GIT+=python-openstackclient" >> local.conf ;;
+        esac
+    done
+    echo "# OFFLINE=True" >> local.conf
+    cat ~/post-configs/* >> local.conf
 fi
+./stack.sh
+
+echo "source /opt/stack/devstack/openrc admin admin" >> ~/.bashrc
+# script /dev/null

@@ -1,41 +1,31 @@
-# Vagrant [Devstack][1]
-[![Build Status](https://api.travis-ci.org/electrocucaracha/vagrant-minimal-devstack.svg?branch=master)](https://api.travis-ci.org/electrocucaracha/vagrant-minimal-devstack)
+# Lint Devstack
+[![Build Status](https://api.travis-ci.org/electrocucaracha/lint-devstack.svg?branch=master)](https://api.travis-ci.org/electrocucaracha/lint-devstack)
 
-This vagrant project pretends to collect information about setting up
-development environments. It also is configured to share the source code
-to host machine. As result, it's possible to run and test things isolated
-and use and IDE for walking through the source during development.
+This project offers an automated process to provision a Devstack[1] 
+development environment for working with OpenStack projects. The
+Virtual Machine is configured to share the OpenStack's projects source
+code to host machine. As result, it's possible to run system tests
+and use a local IDE during development.
 
-## Execution
+## Setup
 
 This project uses [Vagrant tool][2] for provisioning Virtual Machines
-automatically. The [setup](setup.sh) bash script contains the
-Linux instructions to install dependencies and plugins required for
-its usage. This script supports two Virtualization technologies
-([VirtualBox][3] and [Libvirt][4]).
+automatically. It's highly recommended to use the  *setup.sh* script
+of the [bootstrap-vagrant project][3] for installing Vagrant
+dependencies and plugins required for its project. The script
+supports two Virtualization providers (Libvirt and VirtualBox).
 
-    $ ./setup.sh -p libvirt
+    $ curl -fsSL http://bit.ly/initVagrant | PROVIDER=libvirt bash
 
-Once Vagrant is installed, it's possible to provision a cluster using
-the following instructions:
+Once Vagrant is installed, it's possible to deploy the demo with the
+following instruction:
 
     $ vagrant up
 
-## Known issues
+## License
 
-### Firewalld
-
-OpenStack source code folders are shared with the host using NFS provided
-by the host machine. This service requires a specific rule to be setup in
-firewalld service.  In order to allow traffic between host and guest this
-service must be configured properly:
-
-    # firewall-cmd --permanent --add-service rpc-bind
-    # firewall-cmd --permanent --add-service nfs
-
-This can be verified by running `# firewall-cmd --list-all`
+Apache-2.0
 
 [1]: http://docs.openstack.org/developer/devstack/
-[2]: https://www.vagrantup.com/downloads.html
-[3]: https://www.virtualbox.org/wiki/Downloads
-[4]: http://libvirt.org/downloads.html
+[2]: https://www.vagrantup.com/
+[3]: https://github.com/electrocucaracha/bootstrap-vagrant

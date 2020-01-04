@@ -1,28 +1,37 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
+##############################################################################
+# Copyright (c) 2020
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Apache License, Version 2.0
+# which accompanies this distribution, and is available at
+# http://www.apache.org/licenses/LICENSE-2.0
+##############################################################################
 
-Vagrant.require_version ">= 1.8.4"
-box = {
-  :virtualbox => { :name => 'elastic/ubuntu-16.04-x86_64', :version => '20180708.0.0' },
-  :libvirt => { :name => 'elastic/ubuntu-16.04-x86_64', :version=> '20180210.0.0'}
-}
+$no_proxy = ENV['NO_PROXY'] || ENV['no_proxy'] || "127.0.0.1,localhost"
+# NOTE: This range is based on vagrant-libvirt network definition CIDR 192.168.121.0/24
+(1..254).each do |i|
+  $no_proxy += ",192.168.121.#{i}"
+end
+$no_proxy += ",10.0.2.15"
+$socks_proxy = ENV['socks_proxy'] || ENV['SOCKS_PROXY'] || ""
 
-provider = (ENV['VAGRANT_DEFAULT_PROVIDER'] || :virtualbox).to_sym
-puts "[INFO] Provider: #{provider} "
-
-if ENV['no_proxy'] != nil or ENV['NO_PROXY']
-  $no_proxy = ENV['NO_PROXY'] || ENV['no_proxy'] || "127.0.0.1,localhost"
-  $subnet = "192.168.121"
-  # NOTE: This range is based on vagrant-libivirt network definition
-  (1..27).each do |i|
-    $no_proxy += ",#{$subnet}.#{i}"
-  end
+File.exists?("/usr/share/qemu/OVMF.fd") ? loader = "/usr/share/qemu/OVMF.fd" : loader = File.join(File.dirname(__FILE__), "OVMF.fd")
+if not File.exists?(loader)
+  system('curl -O https://download.clearlinux.org/image/OVMF.fd')
 end
 
+$vagrant_boxes = YAML.load_file(File.dirname(__FILE__) + '/distros_supported.yml')
+$devstack_distro = ENV['DEVSTACK_DISTRO'] || "ubuntu"
+$devstack_distro_release = ENV['DEVSTACK_DISTRO_RELEASE'] || "bionic"
+
 Vagrant.configure("2") do |config|
+  config.vm.provider :libvirt
+  config.vm.provider :virtualbox
+
   config.vm.hostname = 'devstack'
-  config.vm.box = box[provider][:name]
-  config.vm.box_version = box[provider][:version]
+  config.vm.box = $vagrant_boxes[$devstack_distro][$devstack_distro_release]["name"]
+  config.vm.box_version = $vagrant_boxes[$devstack_distro][$devstack_distro_release]["version"]
 
   if ENV['http_proxy'] != nil and ENV['https_proxy'] != nil
     if not Vagrant.has_plugin?('vagrant-proxyconf')
@@ -33,10 +42,10 @@ Vagrant.configure("2") do |config|
     config.proxy.https    = ENV['https_proxy'] || ENV['HTTPS_PROXY'] || ""
     config.proxy.no_proxy = $no_proxy
   end
-  config.vm.provider 'libvirt' do |v|
+  config.vm.provider :libvirt do |v|
     v.nested = true
-    v.cpu_mode = 'host-passthrough'
-    v.management_network_address = "192.168.121.0/27" # Management Network - This interface is used by OpenStack services and databases to communicate to each other.
+    v.random_hostname = true
+    v.management_network_address = "192.168.121.0/24"
   end
   [:virtualbox, :libvirt].each do |provider|
     config.vm.provider provider do |p, override|
@@ -45,12 +54,14 @@ Vagrant.configure("2") do |config|
     end
   end
 
-  config.vm.synced_folder './shared/', '/home/vagrant/shared' , create: true
+  config.vm.synced_folder './', '/vagrant'
   config.vm.synced_folder './stack', '/opt/stack', create: true
+  config.vm.synced_folder './post-configs', '/home/vagrant/post-configs', create: true
 
-  config.vm.provision 'shell' do |s|
-    s.path = 'postinstall.sh'
-    s.args = ['python-openstackclient']
-    s.privileged = false
+  config.vm.provision 'shell', privileged: false do |sh|
+    sh.inline = <<-SHELL
+      cd /vagrant
+      ./setup.sh python-openstackclient | tee ~/setup.log
+    SHELL
   end
 end
