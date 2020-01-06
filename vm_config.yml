@@ -1,0 +1,62 @@
+---
+# SPDX-license-identifier: Apache-2.0
+##############################################################################
+# Copyright (c) 2020
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Apache License, Version 2.0
+# which accompanies this distribution, and is available at
+# http://www.apache.org/licenses/LICENSE-2.0
+##############################################################################
+
+name: "devstack"
+os:
+  name: "ubuntu"
+  release: "bionic"
+ip: "10.10.16.3"
+memory: 32768
+cpus: 16
+numa_nodes: # Total memory for NUMA nodes must be equal to RAM size
+  - cpus: 0-3
+    memory: 8192
+  - cpus: 4-7
+    memory: 8192
+  - cpus: 8-11
+    memory: 8192
+  - cpus: 12-15
+    memory: 8192
+pmem:
+  size: 32G # This value may affect the currentMemory libvirt tag
+  slots: 4
+  max_size: 32G
+  vNVDIMMs:
+    - mem_id: mem0
+      id: nv0
+      share: "on"
+      path: /dev/shm
+      size: 8G
+    - mem_id: mem1
+      id: nv1
+      share: "on"
+      path: /dev/shm
+      size: 8G
+    - mem_id: mem2
+      id: nv1
+      share: "on"
+      path: /dev/shm
+      size: 8G
+    - mem_id: mem3
+      id: nv1
+      share: "on"
+      path: /dev/shm
+      size: 8G
+qat_dev:
+  - "3d:00.0"
+sriov_dev:
+  - "41:02.0"
+  - "41:02.1"
+  - "41:02.2"
+  - "41:02.3"
+  - "41:02.4"
+  - "41:02.5"
+  - "41:02.6"
+  - "41:02.7"
