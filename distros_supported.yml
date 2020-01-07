@@ -30,3 +30,13 @@ opensuse:
   tumbleweed:
     name: "opensuse/Tumbleweed.x86_64"
     version: "1.0.20191216"
+fedora:
+  31:
+    name: "fedora/31-cloud-base"
+    version: "31.20191023.0"
+  30:
+    name: "fedora/30-cloud-base"
+    version: "30.20190425.0"
+  29:
+    name: "fedora/29-cloud-base"
+    version: "29.20181024.1"
