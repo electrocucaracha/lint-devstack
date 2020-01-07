@@ -34,15 +34,18 @@ if [ -n "$pkgs" ]; then
 fi
 
 if [ ! -d /opt/stack/devstack ]; then
-    git clone --depth 1 https://opendev.org/openstack/devstack /opt/stack/devstack
+    sudo -E git clone --depth 1 https://github.com/openstack/devstack /opt/stack/devstack
+    if [[ "$USER" != "vagrant" ]]; then
+        sudo chown -R "$USER" /opt/stack/
+    fi
 fi
 
-cd /opt/stack/devstack/
 if [ ! -f local.conf ]; then
+    pushd /opt/stack/devstack/
     cat <<EOL > local.conf
 [[local|localrc]]
-DATA_DIR=/home/vagrant/data
-SERVICE_DIR=/home/vagrant/status
+DATA_DIR=$HOME/data
+SERVICE_DIR=$HOME/status
 
 LOGFILE=\$DATA_DIR/logs/stack.log
 VERBOSE=True
@@ -54,7 +57,7 @@ SERVICE_PASSWORD=${PASSWORD}
 ADMIN_PASSWORD=${PASSWORD}
 RABBIT_PASSWORD=${PASSWORD}
 
-REQUIREMENTS_DIR=/home/vagrant/requirements
+REQUIREMENTS_DIR=$HOME/requirements
 disable_service tempest
 EOL
 
@@ -120,9 +123,11 @@ EOL
         esac
     done
     echo "# OFFLINE=True" >> local.conf
-    cat ~/post-configs/* >> local.conf
+    popd
+    cat ./post-configs/* >> /opt/stack/devstack/local.conf
 fi
-./stack.sh
+cd /opt/stack/devstack/
+FORCE=yes ./stack.sh
 
 echo "source /opt/stack/devstack/openrc admin admin" >> ~/.bashrc
 # script /dev/null
