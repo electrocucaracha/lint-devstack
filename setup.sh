@@ -30,7 +30,7 @@ if ! command -v "$pkg"; then
 fi
 done
 if [ -n "$pkgs" ]; then
-    curl -fsSL http://bit.ly/pkgInstall | PKG=$pkgs bash
+    curl -fsSL http://bit.ly/install_pkg | PKG=$pkgs bash
 fi
 
 if [ ! -d /opt/stack/devstack ]; then
