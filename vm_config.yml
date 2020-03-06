@@ -16,39 +16,25 @@ ip: "10.10.16.3"
 memory: 8192
 cpus: 4
 numa_nodes: # Total memory for NUMA nodes must be equal to RAM size
-  - cpus: 0-3
-    memory: 8192
-  - cpus: 4-7
-    memory: 8192
-  - cpus: 8-11
-    memory: 8192
-  - cpus: 12-15
-    memory: 8192
+  - cpus: 0-1
+    memory: 4096
+  - cpus: 2-3
+    memory: 4096
 pmem:
-  size: 32G # This value may affect the currentMemory libvirt tag
-  slots: 4
-  max_size: 32G
+  size: 8G # This value may affect the currentMemory libvirt tag
+  slots: 2
+  max_size: 16G
   vNVDIMMs:
     - mem_id: mem0
       id: nv0
       share: "on"
       path: /dev/shm
-      size: 8G
+      size: 4G
     - mem_id: mem1
       id: nv1
       share: "on"
       path: /dev/shm
-      size: 8G
-    - mem_id: mem2
-      id: nv1
-      share: "on"
-      path: /dev/shm
-      size: 8G
-    - mem_id: mem3
-      id: nv1
-      share: "on"
-      path: /dev/shm
-      size: 8G
+      size: 4G
 qat_dev:
   - "3d:00.0"
 sriov_dev:

@@ -8,24 +8,41 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
 
+def which(cmd)
+  exts = ENV['PATHEXT'] ? ENV['PATHEXT'].split(';') : ['']
+  ENV['PATH'].split(File::PATH_SEPARATOR).each do |path|
+    exts.each do |ext|
+      exe = File.join(path, "#{cmd}#{ext}")
+      return exe if File.executable?(exe) && !File.directory?(exe)
+    end
+  end
+  nil
+end
+
+$vagrant_boxes = YAML.load_file(File.dirname(__FILE__) + '/distros_supported.yml')
+$vm_config = YAML.load_file(File.dirname(__FILE__) + '/vm_config.yml')
+
 $no_proxy = ENV['NO_PROXY'] || ENV['no_proxy'] || "127.0.0.1,localhost"
 # NOTE: This range is based on vagrant-libvirt network definition CIDR 192.168.121.0/24
 (1..254).each do |i|
   $no_proxy += ",192.168.121.#{i}"
 end
-$no_proxy += ",10.0.2.15"
+# NOTE: Vagrant requires the first network device attached to the
+# virtual machine to be a NAT device. The NAT device is used for port
+# forwarding, which is how Vagrant gets SSH access to the virtual machine.
+$no_proxy += ",10.0.2.15,#{$vm_config['ip']}"
 $socks_proxy = ENV['socks_proxy'] || ENV['SOCKS_PROXY'] || ""
 
-File.exists?("/usr/share/qemu/OVMF.fd") ? loader = "/usr/share/qemu/OVMF.fd" : loader = File.join(File.dirname(__FILE__), "OVMF.fd")
-if not File.exists?(loader)
-  system('curl -O https://download.clearlinux.org/image/OVMF.fd')
+$qemu_version = ""
+if which 'qemu-system-x86_64'
+  $qemu_version = `qemu-system-x86_64 --version | perl -pe '($_)=/([0-9]+([.][0-9]+)+)/'`
 end
-
-$vagrant_boxes = YAML.load_file(File.dirname(__FILE__) + '/distros_supported.yml')
-$vm_config = YAML.load_file(File.dirname(__FILE__) + '/vm_config.yml')
-$qemu_version = `qemu-system-x86_64 --version | perl -pe '($_)=/([0-9]+([.][0-9]+)+)/'`
-$sriov_devices = `lspci | grep "Ethernet .* Virtual Function"|awk '{print $1}'`
-$qat_devices = `for i in 0434 0435 37c8 6f54 19e2; do lspci -d 8086:$i -m; done|awk '{print $1}'`
+$sriov_devices = ""
+$qat_devices = ""
+if which 'lspci'
+  $sriov_devices = `lspci | grep "Ethernet .* Virtual Function"|awk '{print $1}'`
+  $qat_devices = `for i in 0434 0435 37c8 6f54 19e2; do lspci -d 8086:$i -m; done|awk '{print $1}'`
+end
 
 Vagrant.configure("2") do |config|
   config.vm.provider :libvirt
@@ -49,6 +66,13 @@ Vagrant.configure("2") do |config|
       p.cpus = $vm_config["cpus"]
       p.memory = $vm_config["memory"]
     end
+  end
+
+  # NOTE: A private network set up is required by NFS. This is due
+  # to a limitation of VirtualBox's built-in networking.
+  config.vm.network "private_network", ip: $vm_config['ip']
+  config.vm.provider "virtualbox" do |v|
+    v.gui = false
   end
 
   config.vm.provider :libvirt do |v|
@@ -109,14 +133,17 @@ Vagrant.configure("2") do |config|
     end
   end
 
-  config.vm.synced_folder './', '/vagrant'
+  config.vm.synced_folder './', '/vagrant', SharedFoldersEnableSymlinksCreate: false
   config.vm.synced_folder './stack', '/opt/stack', create: true
   config.vm.synced_folder './post-configs', '/home/vagrant/post-configs', create: true
 
   config.vm.provision 'shell', privileged: false do |sh|
+    sh.env = {
+      'HOST_IP': "#{$vm_config['ip']}"
+    }
     sh.inline = <<-SHELL
       cd /vagrant
-      ./setup.sh python-openstackclient | tee ~/setup.log
+      ./setup.sh magnum heat | tee ~/setup.log
     SHELL
   end
 end

@@ -1,7 +1,7 @@
 # Lint Devstack
 [![Build Status](https://api.travis-ci.org/electrocucaracha/lint-devstack.svg?branch=master)](https://api.travis-ci.org/electrocucaracha/lint-devstack)
 
-This project offers an automated process to provision a Devstack[1] 
+This project offers an automated process to provision a [Devstack][1]
 development environment for working with OpenStack projects. The
 Virtual Machine is configured to share the OpenStack's projects source
 code to host machine. As result, it's possible to run system tests

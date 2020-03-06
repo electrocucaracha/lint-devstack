@@ -44,6 +44,7 @@ if [ ! -f local.conf ]; then
     pushd /opt/stack/devstack/
     cat <<EOL > local.conf
 [[local|localrc]]
+HOST_IP=${HOST_IP:-10.0.1.3}
 DATA_DIR=$HOME/data
 SERVICE_DIR=$HOME/status
 
@@ -76,7 +77,7 @@ EOL
                 echo "ENABLED_SERVICES+=,q-lbaasv2">> local.conf
                 echo "enable_plugin neutron-lbaas-dashboard https://git.openstack.org/openstack/neutron-lbaas-dashboard">> local.conf
                 echo "enable_plugin neutron-lbaas https://git.openstack.org/openstack/neutron-lbaas">> local.conf ;;
-            "magnum" ) # magnum requires barbican, heat, neutron-lbaas and octavia
+            "magnum" ) # magnum requires heat
                 echo "enable_plugin magnum-ui https://git.openstack.org/openstack/magnum-ui">> local.conf
                 echo "enable_plugin magnum https://git.openstack.org/openstack/magnum">> local.conf ;;
             "designate" )

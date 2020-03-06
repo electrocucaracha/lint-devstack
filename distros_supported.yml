@@ -8,10 +8,6 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
 
-clearlinux:
-  latest:
-    name: "AntonioMeireles/ClearLinux"
-    version: "31830"
 centos:
   7:
     name: "centos/7"
