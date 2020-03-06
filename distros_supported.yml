@@ -25,7 +25,7 @@ ubuntu:
     version: "20180210.0.0"
   bionic:
     name: "peru/ubuntu-18.04-server-amd64"
-    version: "20191202.01"
+    version: "20200301.01"
 opensuse:
   tumbleweed:
     name: "opensuse/Tumbleweed.x86_64"
