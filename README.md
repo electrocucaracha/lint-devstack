@@ -1,5 +1,6 @@
 # Lint Devstack
 [![Build Status](https://api.travis-ci.org/electrocucaracha/lint-devstack.svg?branch=master)](https://api.travis-ci.org/electrocucaracha/lint-devstack)
+[![Ruby Style Guide](https://img.shields.io/badge/code_style-rubocop-brightgreen.svg)](https://github.com/rubocop/rubocop)
 
 This project offers an automated process to provision a [Devstack][1]
 development environment for working with OpenStack projects. The
