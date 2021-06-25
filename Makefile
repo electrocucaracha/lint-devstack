@@ -1,4 +1,3 @@
----
 # SPDX-license-identifier: Apache-2.0
 ##############################################################################
 # Copyright (c) 2021
@@ -8,9 +7,12 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
 
-Metrics/BlockLength:
-  Enabled: false
-Layout/LineLength:
-  Enabled: false
-Style/StringLiterals:
-  EnforcedStyle: double_quotes  # https://github.com/rubocop/rubocop/issues/5306
+DOCKER_CMD ?= $(shell which docker 2> /dev/null || which podman 2> /dev/null || echo docker)
+
+.PHONY: lint
+lint:
+	sudo -E $(DOCKER_CMD) run --rm -v $$(pwd):/tmp/lint \
+	-e RUN_LOCAL=true \
+	-e LINTER_RULES_PATH=/ \
+	github/super-linter
+	tox -e lint

@@ -4,3 +4,4 @@ stack/
 .DS_Store
 .tox/
 OVMF.fd
+*.log

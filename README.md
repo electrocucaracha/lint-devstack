@@ -1,5 +1,6 @@
 # Lint Devstack
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![GitHub Super-Linter](https://github.com/electrocucaracha/lint-devstack/workflows/Lint%20Code%20Base/badge.svg)](https://github.com/marketplace/actions/super-linter)
 [![Build Status](https://api.travis-ci.org/electrocucaracha/lint-devstack.svg?branch=master)](https://api.travis-ci.org/electrocucaracha/lint-devstack)
 [![Ruby Style Guide](https://img.shields.io/badge/code_style-rubocop-brightgreen.svg)](https://github.com/rubocop/rubocop)
 ![visitors](https://visitor-badge.glitch.me/badge?page_id=electrocucaracha.lint-devstack)
@@ -18,12 +19,12 @@ of the [bootstrap-vagrant project][3] for installing Vagrant
 dependencies and plugins required for its project. The script
 supports two Virtualization providers (Libvirt and VirtualBox).
 
-    $ curl -fsSL http://bit.ly/initVagrant | PROVIDER=libvirt bash
+    curl -fsSL http://bit.ly/initVagrant | PROVIDER=libvirt bash
 
 Once Vagrant is installed, it's possible to deploy the demo with the
 following instruction:
 
-    $ vagrant up
+    vagrant up
 
 [1]: http://docs.openstack.org/developer/devstack/
 [2]: https://www.vagrantup.com/
