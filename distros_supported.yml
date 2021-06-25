@@ -11,28 +11,24 @@
 centos:
   7:
     name: "centos/7"
-    version: "1905.01"
+    version: "2004.01"
   8:
-    name: "generic/centos8"
-    version: "2.0.0"
+    name: "centos/8"
+    version: "2011.0"
 ubuntu:
-  xenial:
-    name: "elastic/ubuntu-16.04-x86_64"
-    version: "20180210.0.0"
   bionic:
-    name: "peru/ubuntu-18.04-server-amd64"
-    version: "20200301.01"
+    name: "generic/ubuntu1804"
+    version: "3.2.20"
+  focal:
+    name: "generic/ubuntu2004"
+    version: "3.2.20"
 opensuse:
   tumbleweed:
     name: "opensuse/Tumbleweed.x86_64"
-    version: "1.0.20191216"
 fedora:
   31:
     name: "fedora/31-cloud-base"
     version: "31.20191023.0"
-  30:
-    name: "fedora/30-cloud-base"
-    version: "30.20190425.0"
-  29:
-    name: "fedora/29-cloud-base"
-    version: "29.20181024.1"
+  32:
+    name: "fedora/32-cloud-base"
+    version: "32.20200422.0"

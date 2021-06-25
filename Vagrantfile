@@ -44,7 +44,7 @@ Vagrant.configure('2') do |config|
 
   config.vm.hostname = vm_config['name']
   config.vm.box = vagrant_boxes[vm_config['os']['name']][vm_config['os']['release']]['name']
-  config.vm.box_version = vagrant_boxes[vm_config['os']['name']][vm_config['os']['release']]['version']
+  config.vm.box_version = vagrant_boxes[vm_config['os']['name']][vm_config['os']['release']]['version'] if vagrant_boxes[vm_config['os']['name']][vm_config['os']['release']].key? 'version'
   config.vm.box_check_update = false
 
   config.vm.synced_folder './', '/vagrant', SharedFoldersEnableSymlinksCreate: false
