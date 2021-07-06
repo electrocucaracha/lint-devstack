@@ -14,12 +14,32 @@ set -o pipefail
 
 PASSWORD='password'
 
+# enable_kernel_attr() - Set a kernel attribute to true
+function enable_kernel_attr {
+    local attr="$1"
+
+    if [ "$(sysctl -n "$attr")" != "1" ]; then
+        if [ -d /etc/sysctl.d ]; then
+            echo "$attr=1" | sudo tee "/etc/sysctl.d/$attr.conf"
+        elif [ -f /etc/sysctl.conf ]; then
+            echo "$attr=1" | sudo tee --append /etc/sysctl.conf
+        fi
+
+        sysctl "$attr=1"
+    fi
+}
+
+enable_kernel_attr net.ipv6.conf.all.disable_ipv6
+enable_kernel_attr net.ipv6.conf.default.disable_ipv6
+sudo sysctl -p
+
 # shellcheck disable=SC1091
 source /etc/os-release || source /usr/lib/os-release
 case ${ID,,} in
     ubuntu|debian)
         sudo apt-get update
         sudo apt-get install -y -qq -o=Dpkg::Use-Pty=0 curl
+        sudo apt-get remove -y python3-yaml python3-httplib2 python3-pyasn1
     ;;
 esac
 
@@ -34,22 +54,23 @@ if [ -n "$pkgs" ]; then
 fi
 
 if [ ! -d /opt/stack/devstack ]; then
-    sudo -E git clone --depth 1 https://github.com/openstack/devstack /opt/stack/devstack
-    if [[ "$USER" != "vagrant" ]]; then
-        sudo chown -R "$USER" /opt/stack/
-    fi
+    sudo -E git clone --depth 1 -b "${DEVSTACK_RELEASE:-stable/wallaby}" https://github.com/openstack/devstack /opt/stack/devstack
+    sudo chown -R "$USER" /opt/stack/
 fi
 
 if [ ! -f local.conf ]; then
     pushd /opt/stack/devstack/
     cat <<EOL > local.conf
 [[local|localrc]]
-HOST_IP=${HOST_IP:-10.0.1.3}
 DATA_DIR=$HOME/data
 SERVICE_DIR=$HOME/status
-
+FLOATING_RANGE=$FLOATING_RANGE
+PUBLIC_NETWORK_GATEWAY=$PUBLIC_NETWORK_GATEWAY
+PUBLIC_INTERFACE=eth1
+FIXED_RANGE=$FIXED_RANGE
 LOGFILE=\$DATA_DIR/logs/stack.log
 VERBOSE=True
+IP_VERSION=4
 
 MYSQL_PASSWORD=${PASSWORD}
 DATABASE_PASSWORD=${PASSWORD}

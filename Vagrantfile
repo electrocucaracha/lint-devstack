@@ -29,6 +29,11 @@ no_proxy = ENV["NO_PROXY"] || ENV["no_proxy"] || "127.0.0.1,localhost"
   no_proxy += ",10.0.2.#{i}"
 end
 
+public_nic = `ip r get 1.1.1.1 | awk 'NR==1{print $5}'`.strip! || "eth0"
+public_cidr = `ip r | grep "dev $(ip r get 1.1.1.1 | awk 'NR==1{print $5}') .* scope link" | awk '{print $1}'`.strip! || "192.168.0.0/24"
+public_gw = `ip r | grep "^default" | awk 'NR==1{print $3}'`.strip! || "192.168.0.1"
+vb_public_nic = `VBoxManage list bridgedifs | grep "^Name:.*#{public_nic}" | awk -F "Name:[ ]*" '{ print $2}'`.strip! if which "VBoxManage"
+
 qemu_version = ""
 qemu_version = `qemu-system-x86_64 --version | perl -pe '($_)=/([0-9]+([.][0-9]+)+)/'` if which "qemu-system-x86_64"
 sriov_devices = ""
@@ -51,6 +56,13 @@ Vagrant.configure("2") do |config|
   config.vm.synced_folder "./stack", "/opt/stack", create: true
   config.vm.synced_folder "./post-configs", "/home/vagrant/post-configs", create: true
 
+  # Public - Provides external access to OpenStack services. For
+  # instances, it provides the route out to the external network and
+  # the IP addresses to enable inbound connections to the instances.
+  # This network can also provide the public API endpoints to
+  # connect to OpenStack services.
+  config.vm.network :public_network, dev: public_nic, bridge: vb_public_nic, auto_config: false
+
   if !ENV["http_proxy"].nil? && !ENV["https_proxy"].nil?
     unless Vagrant.has_plugin?("vagrant-proxyconf")
       system "vagrant plugin install vagrant-proxyconf"
@@ -67,9 +79,6 @@ Vagrant.configure("2") do |config|
     end
   end
 
-  # NOTE: A private network set up is required by NFS. This is due
-  # to a limitation of VirtualBox's built-in networking.
-  config.vm.network "private_network", ip: vm_config["ip"]
   config.vm.provider "virtualbox" do |v|
     v.gui = false
     v.customize ["modifyvm", :id, "--nictype1", "virtio", "--cableconnected1", "on"]
@@ -84,10 +93,11 @@ Vagrant.configure("2") do |config|
     v.customize ["modifyvm", :id, "--vtxvpid", "on"]
   end
 
-  config.vm.provider :libvirt do |v, override|
-    override.vm.synced_folder "./", "/vagrant", type: "nfs", SharedFoldersEnableSymlinksCreate: false
+  config.vm.provider :libvirt do |v, _override|
+    config.vm.synced_folder "./stack", "/opt/stack", create: true, type: "nfs"
     v.nested = true
     v.random_hostname = true
+
     v.management_network_address = "10.0.2.0/24"
     v.management_network_name = "administration"
 
@@ -144,11 +154,13 @@ Vagrant.configure("2") do |config|
 
   config.vm.provision "shell", privileged: false do |sh|
     sh.env = {
-      'HOST_IP': (vm_config["ip"]).to_s
+      'FLOATING_RANGE': ENV["FLOATING_RANGE"] || public_cidr.to_s, # Range not used on the local network
+      'PUBLIC_NETWORK_GATEWAY': ENV["PUBLIC_NETWORK_GATEWAY"] || public_gw.to_s, # Server would normally use to get off the network
+      'FIXED_RANGE': ENV["FIXED_RANGE"] || "10.11.12.0/24" # Internal address space used by the instances
     }
     sh.inline = <<-SHELL
       cd /vagrant
-      ./setup.sh magnum heat | tee ~/setup.log
+      ./setup.sh heat | tee ~/setup.log
     SHELL
   end
 end
