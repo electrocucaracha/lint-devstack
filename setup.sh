@@ -64,10 +64,6 @@ if [ ! -f local.conf ]; then
 [[local|localrc]]
 DATA_DIR=$HOME/data
 SERVICE_DIR=$HOME/status
-FLOATING_RANGE=$FLOATING_RANGE
-PUBLIC_NETWORK_GATEWAY=$PUBLIC_NETWORK_GATEWAY
-PUBLIC_INTERFACE=eth1
-FIXED_RANGE=$FIXED_RANGE
 LOGFILE=\$DATA_DIR/logs/stack.log
 VERBOSE=True
 IP_VERSION=4
@@ -82,6 +78,16 @@ RABBIT_PASSWORD=${PASSWORD}
 REQUIREMENTS_DIR=$HOME/requirements
 disable_service tempest
 EOL
+    if [[ -n "${FLOATING_RANGE:-}" ]]; then
+        echo "FLOATING_RANGE=$FLOATING_RANGE" | tee --append local.conf
+    fi
+    if [[ -n "${PUBLIC_NETWORK_GATEWAY:-}" ]]; then
+        echo "PUBLIC_NETWORK_GATEWAY=$PUBLIC_NETWORK_GATEWAY" | tee --append local.conf
+        echo "PUBLIC_INTERFACE=eth1" | tee --append local.conf
+    fi
+    if [[ -n "${FIXED_RANGE:-}" ]]; then
+        echo "FIXED_RANGE=$FIXED_RANGE" | tee --append local.conf
+    fi
 
     # http://docs.openstack.org/developer/devstack/plugin-registry.html
     for arg in "$@"; do
