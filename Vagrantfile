@@ -73,7 +73,7 @@ Vagrant.configure("2") do |config|
     config.proxy.no_proxy = no_proxy
   end
   %i[virtualbox libvirt].each do |provider|
-    config.vm.provider provider do |p, _override|
+    config.vm.provider provider do |p|
       p.cpus = vm_config["cpus"]
       p.memory = vm_config["memory"]
     end
@@ -93,8 +93,8 @@ Vagrant.configure("2") do |config|
     v.customize ["modifyvm", :id, "--vtxvpid", "on"]
   end
 
-  config.vm.provider :libvirt do |v, _override|
-    config.vm.synced_folder "./stack", "/opt/stack", create: true, type: "nfs"
+  config.vm.provider :libvirt do |v, override|
+    override.vm.synced_folder "./stack", "/opt/stack", create: true, type: "nfs"
     v.nested = true
     v.random_hostname = true
 
