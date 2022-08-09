@@ -9,16 +9,10 @@
 ##############################################################################
 
 centos:
-  7:
-    name: centos/7
-    version: "2004.01"
   8:
     name: centos/8
     version: "2011.0"
 ubuntu:
-  bionic:
-    name: generic/ubuntu1804
-    version: "4.1.4"
   focal:
     name: generic/ubuntu2004
     version: "4.1.4"
@@ -26,13 +20,7 @@ opensuse:
   tumbleweed:
     name: generic/opensuse42
     version: "4.1.4"
-  leap:
-    name: generic/opensuse15
-    version: "4.1.4"
 fedora:
-  34:
-    name: fedora/34-cloud-base
-    version: "34.20210423.0"
   35:
     name: fedora/35-cloud-base
     version: "35.20211026.0"

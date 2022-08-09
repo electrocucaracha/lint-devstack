@@ -47,7 +47,7 @@ info "Define target node"
 name: devstack
 os:
   name: ${OS:-ubuntu}
-  release: ${RELEASE:-bionic}
+  release: ${RELEASE:-focal}
 memory: ${MEMORY:-6144}
 cpus: 2
 numa_nodes: # Total memory for NUMA nodes must be equal to RAM size

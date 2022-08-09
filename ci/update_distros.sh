@@ -84,16 +84,12 @@ cat << EOT > .distros_supported.yml
 EOT
 
 echo "centos:" >> .distros_supported.yml
-_vagrant_pull "7" "centos/7"
 _vagrant_pull "8" "centos/8"
 echo "ubuntu:" >> .distros_supported.yml
-_vagrant_pull "bionic" "generic/ubuntu1804"
 _vagrant_pull "focal" "generic/ubuntu2004"
 echo "opensuse:" >> .distros_supported.yml
 _vagrant_pull "tumbleweed" "generic/opensuse42"
-_vagrant_pull "leap" "generic/opensuse15"
 echo "fedora:" >> .distros_supported.yml
-_vagrant_pull "34" "fedora/34-cloud-base"
 _vagrant_pull "35" "fedora/35-cloud-base"
 
 if [ "$msg" ]; then
