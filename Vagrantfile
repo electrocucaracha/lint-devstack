@@ -22,7 +22,9 @@ def which(cmd)
 end
 
 vagrant_boxes = YAML.load_file("#{File.dirname(__FILE__)}/distros_supported.yml")
-vm_config = YAML.load_file("#{File.dirname(__FILE__)}/vm_config.yml")
+config_file = "#{File.dirname(__FILE__)}/vm_config.yml"
+config_file = "#{File.dirname(__FILE__)}/override_config.yml" if File.exist?("#{File.dirname(__FILE__)}/override_config.yml")
+vm_config = YAML.load_file(config_file)
 
 no_proxy = ENV["NO_PROXY"] || ENV["no_proxy"] || "127.0.0.1,localhost"
 (1..254).each do |i|
