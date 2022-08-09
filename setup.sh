@@ -39,7 +39,7 @@ case ${ID,,} in
     ubuntu|debian)
         sudo apt-get update
         sudo apt-get install -y -qq -o=Dpkg::Use-Pty=0 curl
-        sudo apt-get remove -y python3-yaml python3-httplib2 python3-pyasn1
+        sudo apt-get remove -y python3-yaml python3-httplib2 python3-pyasn1 postgresql postgresql-client
     ;;
 esac
 
