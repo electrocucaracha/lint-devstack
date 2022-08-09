@@ -6,3 +6,4 @@ stack/
 OVMF.fd
 *.log
 *.dic
+override_config.yml

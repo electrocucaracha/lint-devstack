@@ -28,7 +28,9 @@ jobs:
         env:
           VAGRANT_DISABLE_VBOXSYMLINKCREATE: 1
           VAGRANT_EXPERIMENTAL: disks
-        run: vagrant up
+        run: |
+          cd ci
+          ./bootstrap.sh
       - name: Check HW resources
         if: failure()
         run: |
