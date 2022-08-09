@@ -54,7 +54,7 @@ if [ -n "$pkgs" ]; then
 fi
 
 if [ ! -d /opt/stack/devstack ]; then
-    sudo -E git clone --depth 1 -b "${DEVSTACK_RELEASE:-stable/wallaby}" https://github.com/openstack/devstack /opt/stack/devstack
+    sudo -E git clone --depth 1 -b "${DEVSTACK_RELEASE:-stable/yoga}" https://github.com/openstack/devstack /opt/stack/devstack
     sudo chown -R "$USER" /opt/stack/
 fi
 
