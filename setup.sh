@@ -43,15 +43,7 @@ case ${ID,,} in
     ;;
 esac
 
-pkgs=""
-for pkg in sudo git; do
-if ! command -v "$pkg"; then
-    pkgs+=" $pkg"
-fi
-done
-if [ -n "$pkgs" ]; then
-    curl -fsSL http://bit.ly/install_pkg | PKG=$pkgs bash
-fi
+curl -fsSL http://bit.ly/install_pkg | PKG_COMMANDS_LIST="sudo,git" bash
 
 if [ ! -d /opt/stack/devstack ]; then
     sudo -E git clone --depth 1 -b "${DEVSTACK_RELEASE:-stable/yoga}" https://github.com/openstack/devstack /opt/stack/devstack
