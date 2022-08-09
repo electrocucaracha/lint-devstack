@@ -20,27 +20,15 @@ jobs:
       - name: Deploy services
         run: ./setup.sh heat
   check-e2e:
-    runs-on: macos-10.15
-    env:
-      VAGRANT_DISABLE_VBOXSYMLINKCREATE: 1
+    runs-on: macos-12
     steps:
       - uses: actions/checkout@v2
-      - name: Cache Vagrant boxes
-        uses: actions/cache@v2
-        with:
-          path: ~/.vagrant.d/boxes
-          key: ${{ runner.os }}-vagrant-${{ hashFiles('Vagrantfile') }}
-          restore-keys: |
-            ${{ runner.os }}-vagrant-
-      - name: Install GNU tools
-        run: brew install proctools iproute2mac
-      - name: Replace shorten links
-        run: find . -type f -iname "*sh" -exec sed -i '.bak' 's|http://bit.ly/install_pkg|https://raw.githubusercontent.com/electrocucaracha/pkg-mgr_scripts/master/install.sh|g' {} \;
+      - uses: ./.github/actions/vagrant-setup
       - name: Deploy services
+        env:
+          VAGRANT_DISABLE_VBOXSYMLINKCREATE: 1
+          VAGRANT_EXPERIMENTAL: disks
         run: vagrant up
-      - name: Destroy CI instance
-        if: ${{ always() }}
-        run: vagrant destroy -f
       - name: Check HW resources
         if: failure()
         run: |
