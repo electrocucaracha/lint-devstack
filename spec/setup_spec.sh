@@ -11,10 +11,11 @@
 Describe 'setup.sh'
     Include setup.sh
 
+    Mock _append_config_line
+        echo "$1"
+    End
+
     Describe '_enable_service()'
-        Mock _append_config_line
-            echo "$1"
-        End
 
         It 'adds a Horizon service to the local.config Devstack file'
             When call _enable_service 'horizon'
@@ -29,9 +30,6 @@ Describe 'setup.sh'
             'cloudkitty' 'enable_service ck-api ck-proc'
             'sahara'     ''
         End
-        Mock _append_config_line
-            echo "$1"
-        End
         It 'adds a service to the local.config Devstack file'
             When call _enable_services "$1"
             The status should be success
@@ -40,14 +38,14 @@ Describe 'setup.sh'
     End
 
     Describe '_enable_plugin()'
-        Mock _append_config_line
-            echo "$1"
+        Parameters
+            'barbican' "enable_plugin barbican $GIT_REPO_HOST/barbican.git"
+            'invalid'  ''
         End
-
         It 'adds a Barbican plugin to the local.config Devstack file'
-            When call _enable_plugin 'barbican'
+            When call _enable_plugin "$1"
             The status should be success
-            The output should equal "enable_plugin barbican $GIT_REPO_HOST/barbican.git"
+            The output should equal "$2"
         End
     End
 End

@@ -21,18 +21,97 @@ GIT_REPO_HOST="https://opendev.org/openstack"
 LOCAL_CONFIG_PATH="/opt/stack/devstack/local.conf"
 
 # https://docs.openstack.org/devstack/latest/plugin-registry.html
-declare -A plugins=(
-["barbican"]="barbican"
-["ceilometer"]="ceilometer"
-["cloudkitty"]="cloudkitty"
-["designate"]="designate"
-["heat"]="heat"
-["magnum"]="magnum-ui,magnum"
-["neutron-fwaas"]="neutron-fwaas"
-["neutron-lbaas"]="neutron-lbaas,neutron-lbaas-dashboard"
-["neutron-vpnaas"]="neutron-vpnaas"
-["octavia"]="octavia"
-["sahara"]="sahara-dashboard,sahara"
+plugins=(
+"aodh"
+"barbican"
+"blazar"
+"ceilometer"
+"ceilometer-powervm"
+"cinderlib"
+"cloudkitty"
+"cyborg"
+"designate"
+"devstack-plugin-amqp1"
+"devstack-plugin-ceph"
+"devstack-plugin-container"
+"devstack-plugin-kafka"
+"devstack-plugin-nfs"
+"devstack-plugin-open-cas"
+"ec2-api"
+"freezer"
+"freezer-api"
+"freezer-tempest-plugin"
+"freezer-web-ui"
+"heat"
+"heat-dashboard"
+"ironic"
+"ironic-inspector"
+"ironic-prometheus-exporter"
+"ironic-ui"
+"keystone"
+"kuryr-kubernetes"
+"kuryr-libnetwork"
+"kuryr-tempest-plugin"
+"magnum"
+"magnum-ui"
+"manila"
+"manila-tempest-plugin"
+"manila-ui"
+"masakari"
+"mistral"
+"monasca-api"
+"monasca-events-api"
+"monasca-tempest-plugin"
+"murano"
+"networking-bagpipe"
+"networking-baremetal"
+"networking-bgpvpn"
+"networking-generic-switch"
+"networking-hyperv"
+"networking-odl"
+"networking-powervm"
+"networking-sfc"
+"neutron"
+"neutron-dynamic-routing"
+"neutron-fwaas"
+"neutron-fwaas-dashboard"
+"neutron-tempest-plugin"
+"neutron-vpnaas"
+"neutron-vpnaas-dashboard"
+"nova-powervm"
+"octavia"
+"octavia-dashboard"
+"octavia-tempest-plugin"
+"openstacksdk"
+"osprofiler"
+"oswin-tempest-plugin"
+"ovn-octavia-provider"
+"patrole"
+"rally-openstack"
+"sahara"
+"sahara-dashboard"
+"senlin"
+"shade"
+"skyline-apiserver"
+"solum"
+"storlets"
+"tacker"
+"tap-as-a-service"
+"telemetry-tempest-plugin"
+"trove"
+"trove-dashboard"
+"venus"
+"venus-dashboard"
+"vitrage"
+"vitrage-dashboard"
+"vitrage-tempest-plugin"
+"watcher"
+"watcher-dashboard"
+"whitebox-tempest-plugin"
+"zaqar"
+"zaqar-ui"
+"zun"
+"zun-ui"
 )
 
 declare -A services=(
@@ -65,19 +144,10 @@ function _enable_kernel_attr {
     fi
 }
 
-function _enable_plugins {
-    local os_project=$1
-
-    if [[ ${plugins[$os_project]:+1} ]]; then
-        devstack_plugins=${plugins[$os_project]}
-        for plugin in ${devstack_plugins//,/ }; do
-            _enable_plugin "$plugin"
-        done
-    fi
-}
-
 function _enable_plugin {
-    _append_config_line "enable_plugin $1 $GIT_REPO_HOST/$1.git"
+    if [[ ${plugins[*]} =~ (^|[[:space:]])"$1"($|[[:space:]]) ]]; then
+        _append_config_line "enable_plugin $1 $GIT_REPO_HOST/$1.git"
+    fi
 }
 
 function _enable_services {
@@ -159,7 +229,7 @@ EOL
         fi
 
         for arg in "$@"; do
-            _enable_plugins "$arg"
+            _enable_plugin "$arg"
             _enable_services "$arg"
             case $arg in
                 "osprofiler" )
