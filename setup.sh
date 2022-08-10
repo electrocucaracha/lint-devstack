@@ -164,6 +164,10 @@ function _enable_service {
     _append_config_line "enable_service $1"
 }
 
+function _disable_service {
+    _append_config_line "disable_service $1"
+}
+
 function _append_config_line {
     echo "$1" | tee --append  "$LOCAL_CONFIG_PATH"
 }
@@ -223,7 +227,6 @@ ADMIN_PASSWORD=${PASSWORD}
 RABBIT_PASSWORD=${PASSWORD}
 
 REQUIREMENTS_DIR=$HOME/requirements
-disable_service tempest
 EOL
         _set_env_values
         for project in ${OS_PROJECT_LIST//,/ }; do
@@ -243,6 +246,9 @@ EOL
                 "swift" )
                     _append_config_line "SWIFT_HASH=swift";;
             esac
+        done
+        for service in ${OS_DISABLE_SVC_LIST//,/ }; do
+            _disable_service "$service"
         done
         _append_config_line "# OFFLINE=True"
         popd

@@ -157,6 +157,7 @@ Vagrant.configure("2") do |config|
   config.vm.provision "shell", privileged: false do |sh|
     sh.env = {
       'DEBUG': "true",
+      'OS_DISABLE_SVC_LIST': "tempest",
       'OS_PROJECT_LIST': "octavia",
       'LINT_DEVSTACK_FLOATING_RANGE': ENV["FLOATING_RANGE"] || public_cidr.to_s, # Range not used on the local network
       'LINT_DEVSTACK_PUBLIC_NETWORK_GATEWAY': ENV["PUBLIC_NETWORK_GATEWAY"] || public_gw.to_s, # Server would normally use to get off the network

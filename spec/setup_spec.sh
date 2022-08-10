@@ -15,8 +15,15 @@ Describe 'setup.sh'
         echo "$1"
     End
 
-    Describe '_enable_service()'
+    Describe '_disable_service()'
+        It 'disable Tempest service from the local.config Devstack file'
+            When call _disable_service 'tempest'
+            The status should be success
+            The output should equal "disable_service tempest"
+        End
+    End
 
+    Describe '_enable_service()'
         It 'adds a Horizon service to the local.config Devstack file'
             When call _enable_service 'horizon'
             The status should be success
