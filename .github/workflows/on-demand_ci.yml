@@ -10,7 +10,11 @@
 
 name: Check CI
 # yamllint disable-line rule:truthy
-on: [push, pull_request]
+on:
+  push:
+  pull_request_review:
+    types:
+      - submitted
 
 jobs:
   check-ci-baremetal:
@@ -37,3 +41,13 @@ jobs:
           vm_stat
           top -l 1 -n 0
           VBoxManage list runningvms --long
+  check-bash-shellspec:
+    name: Run BDD shell specs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install ShellSpec
+        run: curl -fsSL https://github.com/shellspec/shellspec/releases/latest/download/shellspec-dist.tar.gz | tar -xz -C ..
+      - name: Run Shellspec
+        shell: 'script -q -e -c "bash {0}"'
+        run: ../shellspec/shellspec --profile --xtrace

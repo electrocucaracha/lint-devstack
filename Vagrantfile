@@ -156,13 +156,14 @@ Vagrant.configure("2") do |config|
 
   config.vm.provision "shell", privileged: false do |sh|
     sh.env = {
+      'DEBUG': "true",
       'FLOATING_RANGE': ENV["FLOATING_RANGE"] || public_cidr.to_s, # Range not used on the local network
       'PUBLIC_NETWORK_GATEWAY': ENV["PUBLIC_NETWORK_GATEWAY"] || public_gw.to_s, # Server would normally use to get off the network
       'FIXED_RANGE': ENV["FIXED_RANGE"] || "10.11.12.0/24" # Internal address space used by the instances
     }
     sh.inline = <<-SHELL
       cd /vagrant
-      ./setup.sh heat | tee ~/setup.log
+      ./setup.sh octavia | tee ~/setup.log
     SHELL
   end
 end
