@@ -35,6 +35,9 @@ jobs:
         env:
           VAGRANT_DISABLE_VBOXSYMLINKCREATE: 1
           VAGRANT_EXPERIMENTAL: disks
+          MEMORY: 12288
+          OS: fedora
+          RELEASE: 35
         run: |
           cd ci
           ./bootstrap.sh
