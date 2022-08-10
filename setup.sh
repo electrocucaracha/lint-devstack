@@ -229,27 +229,31 @@ RABBIT_PASSWORD=${RABBIT_PASSWORD:-$PASSWORD}
 REQUIREMENTS_DIR=$HOME/requirements
 EOL
         _set_env_values
-        for project in ${OS_PROJECT_LIST//,/ }; do
-            _enable_plugin "$project"
-            _enable_services "$project"
-            case $project in
-                "osprofiler" )
-                    _append_config_line "CEILOMETER_NOTIFICATION_TOPICS=notifications,profiler";;
-                "python-neutronclient" )
-                    _append_config_line "LIBS_FROM_GIT+=python-neutronclient";;
-                "python-openstackclient" )
-                    _append_config_line "LIBS_FROM_GIT+=python-openstackclient";;
-                "rally" )
-                    git clone --depth 1 https://opendev.org/stackforge/rally /tmp/rally
-                    cp /tmp/rally/contrib/devstack/lib/rally lib/
-                    cp /tmp/rally/contrib/devstack/extras.d/70-rally.sh extras.d/ ;;
-                "swift" )
-                    _append_config_line "SWIFT_HASH=swift";;
-            esac
-        done
-        for service in ${OS_DISABLE_SVC_LIST//,/ }; do
-            _disable_service "$service"
-        done
+        if [ -n "${OS_PROJECT_LIST+x}" ]; then
+            for project in ${OS_PROJECT_LIST//,/ }; do
+                _enable_plugin "$project"
+                _enable_services "$project"
+                case $project in
+                    "osprofiler" )
+                        _append_config_line "CEILOMETER_NOTIFICATION_TOPICS=notifications,profiler";;
+                    "python-neutronclient" )
+                        _append_config_line "LIBS_FROM_GIT+=python-neutronclient";;
+                    "python-openstackclient" )
+                        _append_config_line "LIBS_FROM_GIT+=python-openstackclient";;
+                    "rally" )
+                        git clone --depth 1 https://opendev.org/stackforge/rally /tmp/rally
+                        cp /tmp/rally/contrib/devstack/lib/rally lib/
+                        cp /tmp/rally/contrib/devstack/extras.d/70-rally.sh extras.d/ ;;
+                    "swift" )
+                        _append_config_line "SWIFT_HASH=swift";;
+                esac
+            done
+        fi
+        if [ -n "${OS_DISABLE_SVC_LIST+x}" ]; then
+            for service in ${OS_DISABLE_SVC_LIST//,/ }; do
+                _disable_service "$service"
+            done
+        fi
         _append_config_line "# OFFLINE=True"
         popd
         cat ./post-configs/* >> "$LOCAL_CONFIG_PATH"
