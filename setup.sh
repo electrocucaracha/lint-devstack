@@ -194,6 +194,12 @@ function _clone_repo {
     fi
 }
 
+function _set_env_values {
+    for env_var in $(printenv | grep "LINT_DEVSTACK_"); do
+        _append_config_line "${env_var//LINT_DEVSTACK_/}"
+    done
+}
+
 function _create_local_conf {
     mkdir -p /opt/stack/devstack/
 
@@ -217,17 +223,7 @@ RABBIT_PASSWORD=${PASSWORD}
 REQUIREMENTS_DIR=$HOME/requirements
 disable_service tempest
 EOL
-        if [[ -n "${FLOATING_RANGE:-}" ]]; then
-            _append_config_line "FLOATING_RANGE=$FLOATING_RANGE"
-        fi
-        if [[ -n "${PUBLIC_NETWORK_GATEWAY:-}" ]]; then
-            _append_config_line "PUBLIC_NETWORK_GATEWAY=$PUBLIC_NETWORK_GATEWAY"
-            _append_config_line "PUBLIC_INTERFACE=eth1"
-        fi
-        if [[ -n "${FIXED_RANGE:-}" ]]; then
-            _append_config_line "FIXED_RANGE=$FIXED_RANGE"
-        fi
-
+        _set_env_values
         for arg in "$@"; do
             _enable_plugin "$arg"
             _enable_services "$arg"

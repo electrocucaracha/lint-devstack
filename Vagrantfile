@@ -157,9 +157,10 @@ Vagrant.configure("2") do |config|
   config.vm.provision "shell", privileged: false do |sh|
     sh.env = {
       'DEBUG': "true",
-      'FLOATING_RANGE': ENV["FLOATING_RANGE"] || public_cidr.to_s, # Range not used on the local network
-      'PUBLIC_NETWORK_GATEWAY': ENV["PUBLIC_NETWORK_GATEWAY"] || public_gw.to_s, # Server would normally use to get off the network
-      'FIXED_RANGE': ENV["FIXED_RANGE"] || "10.11.12.0/24" # Internal address space used by the instances
+      'LINT_DEVSTACK_FLOATING_RANGE': ENV["FLOATING_RANGE"] || public_cidr.to_s, # Range not used on the local network
+      'LINT_DEVSTACK_PUBLIC_NETWORK_GATEWAY': ENV["PUBLIC_NETWORK_GATEWAY"] || public_gw.to_s, # Server would normally use to get off the network
+      'LINT_DEVSTACK_PUBLIC_INTERFACE': "eth1",
+      'LINT_DEVSTACK_FIXED_RANGE': ENV["FIXED_RANGE"] || "10.11.12.0/24" # Internal address space used by the instances
     }
     sh.inline = <<-SHELL
       cd /vagrant
