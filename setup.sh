@@ -20,6 +20,8 @@ PASSWORD='password'
 GIT_REPO_HOST="https://opendev.org/openstack"
 LOCAL_CONFIG_PATH="/opt/stack/devstack/local.conf"
 
+export SETUPTOOLS_USE_DISTUTILS=1
+
 # https://docs.openstack.org/devstack/latest/plugin-registry.html
 plugins=(
 "aodh"
