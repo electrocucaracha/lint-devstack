@@ -163,6 +163,9 @@ Vagrant.configure("2") do |config|
       'LINT_DEVSTACK_FIXED_RANGE': ENV["FIXED_RANGE"] || "10.11.12.0/24" # Internal address space used by the instances
     }
     sh.inline = <<-SHELL
+      set -o errexit
+      set -o pipefail
+
       cd /vagrant
       ./setup.sh octavia | tee ~/setup.log
     SHELL
