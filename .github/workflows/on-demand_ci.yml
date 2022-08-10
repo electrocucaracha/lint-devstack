@@ -24,6 +24,7 @@ jobs:
       - name: Deploy services
         env:
           OS_PROJECT_LIST: heat
+          MYSQL_PASSWORD: root
         run: ./setup.sh
   check-e2e:
     runs-on: macos-12
