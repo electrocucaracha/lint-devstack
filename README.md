@@ -26,6 +26,21 @@ following instruction:
 
     vagrant up
 
+## Quick setup
+
+It's possible to run this project without having to clone it. The following
+instruction allows its remote execution:
+
+    curl -fsSL https://raw.githubusercontent.com/electrocucaracha/lint-devstack/master/setup.sh | OS_PROJECT_LIST=octavia bash
+
+### Environment variables
+
+| Name              | Default     | Description                                 |
+|:------------------|:------------|:--------------------------------------------|
+| OS_PROJECT_LIST   |             | List of OpenStack projects to be enabled    |
+| DEVSTACK_RELEASE  | stable/yoga | Devstack Release                            |
+| PASSWORD          |             | Password used for all the Devstack services |
+
 [1]: http://docs.openstack.org/developer/devstack/
 [2]: https://www.vagrantup.com/
 [3]: https://github.com/electrocucaracha/bootstrap-vagrant

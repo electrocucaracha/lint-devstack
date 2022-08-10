@@ -142,7 +142,7 @@ function _enable_kernel_attr {
             echo "$attr=1" | sudo tee --append /etc/sysctl.conf
         fi
 
-        sysctl "$attr=1"
+        sudo sysctl "$attr=1"
     fi
 }
 
@@ -226,10 +226,10 @@ REQUIREMENTS_DIR=$HOME/requirements
 disable_service tempest
 EOL
         _set_env_values
-        for arg in "$@"; do
-            _enable_plugin "$arg"
-            _enable_services "$arg"
-            case $arg in
+        for project in ${OS_PROJECT_LIST//,/ }; do
+            _enable_plugin "$project"
+            _enable_services "$project"
+            case $project in
                 "osprofiler" )
                     _append_config_line "CEILOMETER_NOTIFICATION_TOPICS=notifications,profiler";;
                 "python-neutronclient" )
@@ -254,7 +254,7 @@ function main {
     _disable_ipv6
     _manage_deps
     _clone_repo
-    _create_local_conf "$@"
+    _create_local_conf
 
     cd /opt/stack/devstack/
     FORCE=yes ./stack.sh
@@ -264,5 +264,5 @@ function main {
 }
 
 if [[ "${__name__:-"__main__"}" == "__main__" ]]; then
-    main "$@"
+    main
 fi
