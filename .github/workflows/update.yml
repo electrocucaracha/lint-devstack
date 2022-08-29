@@ -25,7 +25,7 @@ jobs:
       - uses: technote-space/create-pr-action@v2
         with:
           EXECUTE_COMMANDS: |
-            ./ci/update_versions.sh
+            ./ci/update_distros.sh
           COMMIT_MESSAGE: 'Upgrade distro supported list'
           COMMIT_NAME: 'electrocucaracha bot'
           PR_BRANCH_NAME: "versions-update-${PR_ID}"
