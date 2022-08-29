@@ -20,116 +20,114 @@ PASSWORD='password'
 GIT_REPO_HOST="https://opendev.org/openstack"
 LOCAL_CONFIG_PATH="/opt/stack/devstack/local.conf"
 
-export SETUPTOOLS_USE_DISTUTILS=1
-
 # https://docs.openstack.org/devstack/latest/plugin-registry.html
 plugins=(
-"aodh"
-"barbican"
-"blazar"
-"ceilometer"
-"ceilometer-powervm"
-"cinderlib"
-"cloudkitty"
-"cyborg"
-"designate"
-"devstack-plugin-amqp1"
-"devstack-plugin-ceph"
-"devstack-plugin-container"
-"devstack-plugin-kafka"
-"devstack-plugin-nfs"
-"devstack-plugin-open-cas"
-"ec2-api"
-"freezer"
-"freezer-api"
-"freezer-tempest-plugin"
-"freezer-web-ui"
-"heat"
-"heat-dashboard"
-"ironic"
-"ironic-inspector"
-"ironic-prometheus-exporter"
-"ironic-ui"
-"keystone"
-"kuryr-kubernetes"
-"kuryr-libnetwork"
-"kuryr-tempest-plugin"
-"magnum"
-"magnum-ui"
-"manila"
-"manila-tempest-plugin"
-"manila-ui"
-"masakari"
-"mistral"
-"monasca-api"
-"monasca-events-api"
-"monasca-tempest-plugin"
-"murano"
-"networking-bagpipe"
-"networking-baremetal"
-"networking-bgpvpn"
-"networking-generic-switch"
-"networking-hyperv"
-"networking-odl"
-"networking-powervm"
-"networking-sfc"
-"neutron"
-"neutron-dynamic-routing"
-"neutron-fwaas"
-"neutron-fwaas-dashboard"
-"neutron-tempest-plugin"
-"neutron-vpnaas"
-"neutron-vpnaas-dashboard"
-"nova-powervm"
-"octavia"
-"octavia-dashboard"
-"octavia-tempest-plugin"
-"openstacksdk"
-"osprofiler"
-"oswin-tempest-plugin"
-"ovn-octavia-provider"
-"patrole"
-"rally-openstack"
-"sahara"
-"sahara-dashboard"
-"senlin"
-"shade"
-"skyline-apiserver"
-"solum"
-"storlets"
-"tacker"
-"tap-as-a-service"
-"telemetry-tempest-plugin"
-"trove"
-"trove-dashboard"
-"venus"
-"venus-dashboard"
-"vitrage"
-"vitrage-dashboard"
-"vitrage-tempest-plugin"
-"watcher"
-"watcher-dashboard"
-"whitebox-tempest-plugin"
-"zaqar"
-"zaqar-ui"
-"zun"
-"zun-ui"
+    "aodh"
+    "barbican"
+    "blazar"
+    "ceilometer"
+    "ceilometer-powervm"
+    "cinderlib"
+    "cloudkitty"
+    "cyborg"
+    "designate"
+    "devstack-plugin-amqp1"
+    "devstack-plugin-ceph"
+    "devstack-plugin-container"
+    "devstack-plugin-kafka"
+    "devstack-plugin-nfs"
+    "devstack-plugin-open-cas"
+    "ec2-api"
+    "freezer"
+    "freezer-api"
+    "freezer-tempest-plugin"
+    "freezer-web-ui"
+    "heat"
+    "heat-dashboard"
+    "ironic"
+    "ironic-inspector"
+    "ironic-prometheus-exporter"
+    "ironic-ui"
+    "keystone"
+    "kuryr-kubernetes"
+    "kuryr-libnetwork"
+    "kuryr-tempest-plugin"
+    "magnum"
+    "magnum-ui"
+    "manila"
+    "manila-tempest-plugin"
+    "manila-ui"
+    "masakari"
+    "mistral"
+    "monasca-api"
+    "monasca-events-api"
+    "monasca-tempest-plugin"
+    "murano"
+    "networking-bagpipe"
+    "networking-baremetal"
+    "networking-bgpvpn"
+    "networking-generic-switch"
+    "networking-hyperv"
+    "networking-odl"
+    "networking-powervm"
+    "networking-sfc"
+    "neutron"
+    "neutron-dynamic-routing"
+    "neutron-fwaas"
+    "neutron-fwaas-dashboard"
+    "neutron-tempest-plugin"
+    "neutron-vpnaas"
+    "neutron-vpnaas-dashboard"
+    "nova-powervm"
+    "octavia"
+    "octavia-dashboard"
+    "octavia-tempest-plugin"
+    "openstacksdk"
+    "osprofiler"
+    "oswin-tempest-plugin"
+    "ovn-octavia-provider"
+    "patrole"
+    "rally-openstack"
+    "sahara"
+    "sahara-dashboard"
+    "senlin"
+    "shade"
+    "skyline-apiserver"
+    "solum"
+    "storlets"
+    "tacker"
+    "tap-as-a-service"
+    "telemetry-tempest-plugin"
+    "trove"
+    "trove-dashboard"
+    "venus"
+    "venus-dashboard"
+    "vitrage"
+    "vitrage-dashboard"
+    "vitrage-tempest-plugin"
+    "watcher"
+    "watcher-dashboard"
+    "whitebox-tempest-plugin"
+    "zaqar"
+    "zaqar-ui"
+    "zun"
+    "zun-ui"
 )
 
 declare -A services=(
-["ceilometer"]="ceilometer-api"
-["cloudkitty"]="ck-api,ck-proc"
-["designate"]="designate,designate-central,designate-api,designate-pool-manager,designate-zone-manager,designate-mdns"
-["horizon"]="horizon"
-["marconi"]="marconi-server"
-["neutron-fwaas"]="q-fwaas"
-["neutron-lbaas"]="q-lbaasv2"
-["neutron-metering"]="q-metering"
-["neutron-vpnaas"]="q-vpnaas"
-["octavia"]="octavia,o-cw,o-hk,o-hm,o-api"
-["rally"]="rally"
-["swift"]="s-proxy,s-object,s-container,s-account"
-["trove"]="trove,tr-api,tr-tmgr,tr-cond"
+    ["ceilometer"]="ceilometer-api"
+    ["cloudkitty"]="ck-api,ck-proc"
+    ["designate"]="designate,designate-central,designate-api,designate-pool-manager,designate-zone-manager,designate-mdns"
+    ["horizon"]="horizon"
+    ["marconi"]="marconi-server"
+    ["neutron-fwaas"]="q-fwaas"
+    ["neutron-lbaas"]="q-lbaasv2"
+    ["neutron-metering"]="q-metering"
+    ["neutron-vpnaas"]="q-vpnaas"
+    ["octavia"]="octavia,o-cw,o-hk,o-hm,o-api"
+    ["rally"]="rally"
+    ["swift"]="s-proxy,s-object,s-container,s-account"
+    ["trove"]="trove,tr-api,tr-tmgr,tr-cond"
 )
 
 function _enable_kernel_attr {
@@ -169,7 +167,7 @@ function _disable_service {
 }
 
 function _append_config_line {
-    echo "$1" | tee --append  "$LOCAL_CONFIG_PATH"
+    echo "$1" | tee --append "$LOCAL_CONFIG_PATH"
 }
 
 function _disable_ipv6 {
@@ -182,10 +180,10 @@ function _manage_deps {
     # shellcheck disable=SC1091
     source /etc/os-release || source /usr/lib/os-release
     case ${ID,,} in
-        ubuntu|debian)
-            sudo apt-get update
-            sudo apt-get install -y -qq -o=Dpkg::Use-Pty=0 curl
-            sudo apt-get remove -y python3-yaml python3-httplib2 python3-pyasn1 postgresql postgresql-client
+    ubuntu | debian)
+        sudo apt-get update
+        sudo apt-get install -y -qq -o=Dpkg::Use-Pty=0 curl
+        sudo apt-get remove -y python3-yaml python3-httplib2 python3-pyasn1 postgresql postgresql-client python3-cryptography
         ;;
     esac
 
@@ -211,7 +209,7 @@ function _create_local_conf {
 
     if [ ! -f "$LOCAL_CONFIG_PATH" ]; then
         pushd /opt/stack/devstack/
-        cat <<EOL > "$LOCAL_CONFIG_PATH"
+        cat <<EOL >"$LOCAL_CONFIG_PATH"
 [[local|localrc]]
 DATA_DIR=$HOME/data
 SERVICE_DIR=$HOME/status
@@ -234,18 +232,23 @@ EOL
                 _enable_plugin "$project"
                 _enable_services "$project"
                 case $project in
-                    "osprofiler" )
-                        _append_config_line "CEILOMETER_NOTIFICATION_TOPICS=notifications,profiler";;
-                    "python-neutronclient" )
-                        _append_config_line "LIBS_FROM_GIT+=python-neutronclient";;
-                    "python-openstackclient" )
-                        _append_config_line "LIBS_FROM_GIT+=python-openstackclient";;
-                    "rally" )
-                        git clone --depth 1 https://opendev.org/stackforge/rally /tmp/rally
-                        cp /tmp/rally/contrib/devstack/lib/rally lib/
-                        cp /tmp/rally/contrib/devstack/extras.d/70-rally.sh extras.d/ ;;
-                    "swift" )
-                        _append_config_line "SWIFT_HASH=swift";;
+                "osprofiler")
+                    _append_config_line "CEILOMETER_NOTIFICATION_TOPICS=notifications,profiler"
+                    ;;
+                "python-neutronclient")
+                    _append_config_line "LIBS_FROM_GIT+=python-neutronclient"
+                    ;;
+                "python-openstackclient")
+                    _append_config_line "LIBS_FROM_GIT+=python-openstackclient"
+                    ;;
+                "rally")
+                    git clone --depth 1 https://opendev.org/stackforge/rally /tmp/rally
+                    cp /tmp/rally/contrib/devstack/lib/rally lib/
+                    cp /tmp/rally/contrib/devstack/extras.d/70-rally.sh extras.d/
+                    ;;
+                "swift")
+                    _append_config_line "SWIFT_HASH=swift"
+                    ;;
                 esac
             done
         fi
@@ -256,7 +259,7 @@ EOL
         fi
         _append_config_line "# OFFLINE=True"
         popd
-        cat ./post-configs/* >> "$LOCAL_CONFIG_PATH"
+        cat ./post-configs/* >>"$LOCAL_CONFIG_PATH"
     fi
 }
 
@@ -269,10 +272,10 @@ function main {
     cd /opt/stack/devstack/
     FORCE=yes ./stack.sh
 
-    echo "source /opt/stack/devstack/openrc admin admin" >> ~/.bashrc
+    echo "source /opt/stack/devstack/openrc admin admin" >>~/.bashrc
     # script /dev/null
 }
 
-if [[ "${__name__:-"__main__"}" == "__main__" ]]; then
+if [[ ${__name__:-"__main__"} == "__main__" ]]; then
     main
 fi

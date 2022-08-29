@@ -29,13 +29,13 @@ function destroy_vm {
     $VAGRANT_CMD destroy -f
 }
 
-if ! command -v vagrant > /dev/null; then
+if ! command -v vagrant >/dev/null; then
     # NOTE: Shorten link -> https://github.com/electrocucaracha/bootstrap-vagrant
     curl -fsSL http://bit.ly/initVagrant | PROVIDER=libvirt bash
 fi
 
 VAGRANT_CMD=""
-if [[ "${SUDO_VAGRANT_CMD:-false}" == "true" ]]; then
+if [[ ${SUDO_VAGRANT_CMD:-false} == "true" ]]; then
     VAGRANT_CMD="sudo -H"
 fi
 VAGRANT_CMD+=" $(command -v vagrant)"
@@ -43,7 +43,7 @@ VAGRANT_CMD+=" $(command -v vagrant)"
 VAGRANT_CMD_UP="$VAGRANT_CMD up --no-destroy-on-error"
 
 info "Define target node"
-    cat <<EOL > ../override_config.yml
+cat <<EOL >../override_config.yml
 name: devstack
 os:
   name: ${OS:-ubuntu}
