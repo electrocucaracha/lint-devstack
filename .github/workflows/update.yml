@@ -13,15 +13,21 @@ name: Scheduled Versions and Dictionary verification
 on:
   schedule:
     - cron: '0 0 * * *'
-  pull_request:
-    types: [opened, synchronize, reopened, closed]
   workflow_dispatch:
 
 jobs:
   check-versions:
-    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # for technote-space/create-pr-action to push code
+      pull-requests: write  # for technote-space/create-pr-action to create a PR
+    runs-on: macos-12
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v3.1.0
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '^3.10'
+      - name: Install GNU tools
+        run: brew install iproute2mac
       - uses: technote-space/create-pr-action@v2
         with:
           EXECUTE_COMMANDS: |
