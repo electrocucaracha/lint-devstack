@@ -15,11 +15,11 @@ centos:
 ubuntu:
   focal:
     name: generic/ubuntu2004
-    version: "4.1.20"
+    version: "4.2.0"
 opensuse:
   tumbleweed:
     name: generic/opensuse42
-    version: "4.1.20"
+    version: "4.2.0"
 fedora:
   35:
     name: fedora/35-cloud-base
