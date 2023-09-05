@@ -21,7 +21,7 @@ jobs:
     name: Check scripts format
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Run the sh-checker
         uses: luizm/action-sh-checker@master
         env:
@@ -33,7 +33,7 @@ jobs:
   check-ci-baremetal:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Deploy services
         env:
           MYSQL_PASSWORD: root
@@ -41,7 +41,7 @@ jobs:
   check-e2e:
     runs-on: macos-12
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/vagrant-setup
       - name: Deploy services
         env:
@@ -63,7 +63,7 @@ jobs:
     name: Run BDD shell specs
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install ShellSpec
         run: curl -fsSL https://github.com/shellspec/shellspec/releases/latest/download/shellspec-dist.tar.gz | tar -xz -C ..
       - name: Run Shellspec
