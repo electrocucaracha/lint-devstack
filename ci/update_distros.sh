@@ -74,7 +74,7 @@ cat <<EOT >.distros_supported.yml
 ---
 # SPDX-license-identifier: Apache-2.0
 ##############################################################################
-# Copyright (c) 2019
+# Copyright (c) 2019 - $(date '+%Y')
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Apache License, Version 2.0
 # which accompanies this distribution, and is available at
@@ -83,14 +83,11 @@ cat <<EOT >.distros_supported.yml
 
 EOT
 
-echo "centos:" >>.distros_supported.yml
-_vagrant_pull "8" "centos/8"
+echo "debian:" >>.distros_supported.yml
+_vagrant_pull "10" "debian/bookworm64"
+_vagrant_pull "11" "debian/bullseye64"
 echo "ubuntu:" >>.distros_supported.yml
-_vagrant_pull "focal" "generic/ubuntu2004"
-echo "opensuse:" >>.distros_supported.yml
-_vagrant_pull "tumbleweed" "generic/opensuse42"
-echo "fedora:" >>.distros_supported.yml
-_vagrant_pull "35" "fedora/35-cloud-base"
+_vagrant_pull "jammy" "generic/ubuntu2204"
 
 if [ "$msg" ]; then
     echo -e "$msg"

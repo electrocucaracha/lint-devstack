@@ -31,7 +31,7 @@ jobs:
           sh_checker_shellcheck_disable: true
           sh_checker_exclude: "spec/setup_spec.sh"
   check-ci-baremetal:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4.0.0
       - name: Deploy services
@@ -40,6 +40,10 @@ jobs:
         run: ./setup.sh
   check-e2e:
     runs-on: macos-12
+    strategy:
+      fail-fast: false
+      matrix:
+        release: [10, 11]
     steps:
       - uses: actions/checkout@v4.0.0
       - uses: ./.github/actions/vagrant-setup
@@ -48,8 +52,8 @@ jobs:
           VAGRANT_DISABLE_VBOXSYMLINKCREATE: 1
           VAGRANT_EXPERIMENTAL: disks
           MEMORY: 12288
-          OS: fedora
-          RELEASE: 35
+          OS: debian
+          RELEASE: ${{ matrix.release }}
         run: |
           cd ci
           ./bootstrap.sh
