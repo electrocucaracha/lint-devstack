@@ -31,7 +31,7 @@ no_proxy = ENV["NO_PROXY"] || ENV["no_proxy"] || "127.0.0.1,localhost"
   no_proxy += ",10.0.2.#{i}"
 end
 
-public_nic = `ip r get 1.1.1.1 | awk 'NR==1{print $5}'`.strip! || "eth0"
+public_nic = `ip r get 1.1.1.1 | awk 'NR==1{print $5}'`.strip! || "eno1"
 public_cidr = `ip r | grep "dev $(ip r get 1.1.1.1 | awk 'NR==1{print $5}') .* scope link" | awk '{print $1}'`.strip! || "192.168.0.0/24"
 public_gw = `ip r | grep "^default" | awk 'NR==1{print $3}'`.strip! || "192.168.0.1"
 vb_public_nic = `VBoxManage list bridgedifs | grep "^Name:.*#{public_nic}" | awk -F "Name:[ ]*" '{ print $2}'`.strip! if which "VBoxManage"
