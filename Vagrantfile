@@ -3,7 +3,7 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 ##############################################################################
-# Copyright (c) 2020
+# Copyright (c) 2020, 2023
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Apache License, Version 2.0
 # which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ def which(cmd)
   nil
 end
 
+require "yaml"
 vagrant_boxes = YAML.load_file("#{File.dirname(__FILE__)}/distros_supported.yml")
 config_file = "#{File.dirname(__FILE__)}/vm_config.yml"
 config_file = "#{File.dirname(__FILE__)}/override_config.yml" if File.exist?("#{File.dirname(__FILE__)}/override_config.yml")
@@ -96,9 +97,12 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.provider :libvirt do |v, override|
-    override.vm.synced_folder "./", "/vagrant", SharedFoldersEnableSymlinksCreate: false, type: "nfs", nfs_version: ENV.fetch("VAGRANT_NFS_VERSION", 3)
-    override.vm.synced_folder "./stack", "/opt/stack", create: true, type: "nfs", nfs_version: ENV.fetch("VAGRANT_NFS_VERSION", 3)
-    override.vm.synced_folder "./post-configs", "/home/vagrant/post-configs", create: true, type: "nfs", nfs_version: ENV.fetch("VAGRANT_NFS_VERSION", 3)
+    override.vm.synced_folder "./", "/vagrant", SharedFoldersEnableSymlinksCreate: false, type: "nfs",
+                                                nfs_version: ENV.fetch("VAGRANT_NFS_VERSION", 3)
+    override.vm.synced_folder "./stack", "/opt/stack", create: true, type: "nfs",
+                                                       nfs_version: ENV.fetch("VAGRANT_NFS_VERSION", 3)
+    override.vm.synced_folder "./post-configs", "/home/vagrant/post-configs", create: true, type: "nfs",
+                                                                              nfs_version: ENV.fetch("VAGRANT_NFS_VERSION", 3)
     v.nested = true
     v.random_hostname = true
 
@@ -158,13 +162,16 @@ Vagrant.configure("2") do |config|
 
   config.vm.provision "shell", privileged: false do |sh|
     sh.env = {
-      'DEBUG': "true",
-      'OS_DISABLE_SVC_LIST': "tempest",
-      'OS_PROJECT_LIST': "octavia",
-      'LINT_DEVSTACK_FLOATING_RANGE': ENV["FLOATING_RANGE"] || public_cidr.to_s, # Range not used on the local network
-      'LINT_DEVSTACK_PUBLIC_NETWORK_GATEWAY': ENV["PUBLIC_NETWORK_GATEWAY"] || public_gw.to_s, # Server would normally use to get off the network
-      'LINT_DEVSTACK_PUBLIC_INTERFACE': "eth1",
-      'LINT_DEVSTACK_FIXED_RANGE': ENV["FIXED_RANGE"] || "10.11.12.0/24" # Internal address space used by the instances
+      DEBUG: "true",
+      OS_DISABLE_SVC_LIST: "tempest",
+      OS_PROJECT_LIST: "octavia",
+      # Range not used on the local network
+      LINT_DEVSTACK_FLOATING_RANGE: ENV.fetch("FLOATING_RANGE", public_cidr.to_s),
+      # Server would normally use to get off the network
+      LINT_DEVSTACK_PUBLIC_NETWORK_GATEWAY: ENV.fetch("PUBLIC_NETWORK_GATEWAY", public_gw.to_s),
+      LINT_DEVSTACK_PUBLIC_INTERFACE: "eth1",
+      # Internal address space used by the instances
+      LINT_DEVSTACK_FIXED_RANGE: ENV.fetch("FIXED_RANGE", "10.11.12.0/24")
     }
     sh.inline = <<-SHELL
       set -o errexit

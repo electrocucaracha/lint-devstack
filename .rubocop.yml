@@ -8,6 +8,8 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
 
+AllCops:
+  NewCops: enable
 Metrics/BlockLength:
   Enabled: false
 Layout/LineLength:
