@@ -96,7 +96,9 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.provider :libvirt do |v, override|
-    override.vm.synced_folder "./stack", "/opt/stack", create: true, type: "nfs"
+    override.vm.synced_folder "./", "/vagrant", SharedFoldersEnableSymlinksCreate: false, type: "nfs", nfs_version: ENV.fetch("VAGRANT_NFS_VERSION", 3)
+    override.vm.synced_folder "./stack", "/opt/stack", create: true, type: "nfs", nfs_version: ENV.fetch("VAGRANT_NFS_VERSION", 3)
+    override.vm.synced_folder "./post-configs", "/home/vagrant/post-configs", create: true, type: "nfs", nfs_version: ENV.fetch("VAGRANT_NFS_VERSION", 3)
     v.nested = true
     v.random_hostname = true
 
