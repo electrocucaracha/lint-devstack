@@ -83,11 +83,11 @@ cat <<EOT >.distros_supported.yml
 
 EOT
 
-echo "debian:" >>.distros_supported.yml
-_vagrant_pull "10" "debian/bookworm64"
-_vagrant_pull "11" "debian/bullseye64"
+echo "rocky:" >>.distros_supported.yml
+_vagrant_pull "9" "rockylinux/9"
 echo "ubuntu:" >>.distros_supported.yml
 _vagrant_pull "jammy" "generic/ubuntu2204"
+_vagrant_pull "focal" "generic/ubuntu2004"
 
 if [ "$msg" ]; then
     echo -e "$msg"

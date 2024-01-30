@@ -30,7 +30,7 @@ jobs:
         with:
           sh_checker_shellcheck_disable: true
           sh_checker_exclude: "spec/setup_spec.sh"
-  check-ci-baremetal:
+  check-ci-baremetal-jammy:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4.1.1
@@ -38,12 +38,16 @@ jobs:
         env:
           MYSQL_PASSWORD: root
         run: ./setup.sh
-  check-e2e:
+  check-ci-baremetal-focal:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v4.1.1
+      - name: Deploy services
+        env:
+          MYSQL_PASSWORD: root
+        run: ./setup.sh
+  check-e2e-rocky:
     runs-on: macos-12
-    strategy:
-      fail-fast: false
-      matrix:
-        release: [10, 11]
     steps:
       - uses: actions/checkout@v4.1.1
       - uses: ./.github/actions/vagrant-setup
@@ -52,8 +56,8 @@ jobs:
           VAGRANT_DISABLE_VBOXSYMLINKCREATE: 1
           VAGRANT_EXPERIMENTAL: disks
           MEMORY: 12288
-          OS: debian
-          RELEASE: ${{ matrix.release }}
+          OS: rocky
+          RELEASE: 9
         run: |
           cd ci
           ./bootstrap.sh
