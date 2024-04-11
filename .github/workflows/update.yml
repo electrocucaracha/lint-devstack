@@ -28,6 +28,8 @@ jobs:
           python-version: '^3.10'
       - name: Install GNU tools
         run: brew install iproute2mac
+      - name: Install vagrant tool
+        run: brew install vagrant
       - uses: technote-space/create-pr-action@v2.1.4
         with:
           EXECUTE_COMMANDS: |
