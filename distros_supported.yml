@@ -11,7 +11,7 @@
 rocky:
   9:
     name: rockylinux/9
-    version: "3.0.0"
+    version: "4.0.0"
 ubuntu:
   jammy:
     name: generic/ubuntu2204
