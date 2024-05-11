@@ -1,4 +1,6 @@
+boyter
 brightgreen
+COCOMO
 DEVSTACK
 electrocucaracha
 fsSL
@@ -16,7 +18,10 @@ OpenStack
 OpenStack's
 pre
 rubocop
+Scc
+sloc
 src
 svg
 vagrantup
 VirtualBox
+xyz

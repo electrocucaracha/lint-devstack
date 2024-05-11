@@ -5,6 +5,8 @@
 [![Ruby Style Guide](https://img.shields.io/badge/code_style-rubocop-brightgreen.svg)](https://github.com/rubocop/rubocop)
 <!-- markdown-link-check-disable-next-line -->
 ![visitors](https://visitor-badge.laobi.icu/badge?page_id=electrocucaracha.lint-devstack)
+[![Scc Code Badge](https://sloc.xyz/github/electrocucaracha/lint-devstack?category=code)](https://github.com/boyter/scc/)
+[![Scc COCOMO Badge](https://sloc.xyz/github/electrocucaracha/lint-devstack?category=cocomo)](https://github.com/boyter/scc/)
 
 This project offers an automated process to provision a [Devstack][1]
 development environment for working with OpenStack projects. The
