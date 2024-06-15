@@ -212,6 +212,7 @@ function _create_local_conf {
         cat <<EOL >"$LOCAL_CONFIG_PATH"
 [[local|localrc]]
 SERVICE_DIR=$HOME/status
+GLOBAL_VENV=False
 LOGFILE=\$DATA_DIR/logs/stack.log
 VERBOSE=True
 IP_VERSION=4
