@@ -164,7 +164,7 @@ Vagrant.configure("2") do |config|
     sh.env = {
       DEBUG: "true",
       OS_DISABLE_SVC_LIST: "tempest",
-      OS_PROJECT_LIST: "octavia",
+      OS_PROJECT_LIST: "magnum",
       # Range not used on the local network
       LINT_DEVSTACK_FLOATING_RANGE: ENV.fetch("FLOATING_RANGE", public_cidr.to_s),
       # Server would normally use to get off the network
