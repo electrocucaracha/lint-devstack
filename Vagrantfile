@@ -33,8 +33,9 @@ no_proxy = ENV["NO_PROXY"] || ENV["no_proxy"] || "127.0.0.1,localhost"
 end
 
 public_nic = `ip r get 1.1.1.1 | awk 'NR==1{print $5}'`.strip! || "eno1"
-public_cidr = `ip r | grep "dev $(ip r get 1.1.1.1 | awk 'NR==1{print $5}') .* scope link" | awk '{print $1}'`.strip! || "192.168.0.0/24"
-public_gw = `ip r | grep "^default" | awk 'NR==1{print $3}'`.strip! || "192.168.0.1"
+public_cidr = `ip r | grep "dev $(ip r get 1.1.1.1 | awk 'NR==1{print $5}') .* scope link" | awk '{print $1}'`.strip! || "192.168.1.0/24"
+public_gw = `ip r | grep "^default" | awk 'NR==1{print $3}' `.strip! || "192.168.1.1"
+*prefix, _ = public_gw.split(".")
 vb_public_nic = `VBoxManage list bridgedifs | grep "^Name:.*#{public_nic}" | awk -F "Name:[ ]*" '{ print $2}'`.strip! if which "VBoxManage"
 
 qemu_version = ""
@@ -168,6 +169,7 @@ Vagrant.configure("2") do |config|
       LINT_DEVSTACK_DATA_DIR: "/tmp/stack/data",
       # Range not used on the local network
       LINT_DEVSTACK_FLOATING_RANGE: ENV.fetch("FLOATING_RANGE", public_cidr.to_s),
+      LINT_DEVSTACK_Q_FLOATING_ALLOCATION_POOL: ENV.fetch("Q_FLOATING_ALLOCATION_POOL", "start=#{prefix.join('.')}.250,end=#{prefix.join('.')}.254"),
       # Server would normally use to get off the network
       LINT_DEVSTACK_PUBLIC_NETWORK_GATEWAY: ENV.fetch("PUBLIC_NETWORK_GATEWAY", public_gw.to_s),
       LINT_DEVSTACK_PUBLIC_INTERFACE: "eth1",
