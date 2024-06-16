@@ -165,8 +165,8 @@ Vagrant.configure("2") do |config|
     sh.env = {
       DEBUG: "true",
       OS_DISABLE_SVC_LIST: "tempest",
-      OS_PROJECT_LIST: "magnum",
-      LINT_DEVSTACK_DATA_DIR: "/tmp/stack/data",
+      OS_PROJECT_LIST: "magnum,magnum-ui",
+      LINT_DEVSTACK_LOGDIR: "/var/log/stack",
       # Range not used on the local network
       LINT_DEVSTACK_FLOATING_RANGE: ENV.fetch("FLOATING_RANGE", public_cidr.to_s),
       LINT_DEVSTACK_Q_FLOATING_ALLOCATION_POOL: ENV.fetch("Q_FLOATING_ALLOCATION_POOL", "start=#{prefix.join('.')}.250,end=#{prefix.join('.')}.254"),

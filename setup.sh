@@ -237,6 +237,11 @@ EOL
                 "osprofiler")
                     _append_config_line "CEILOMETER_NOTIFICATION_TOPICS=notifications,profiler"
                     ;;
+                "magnum")
+                    # Enable barbican service and use it to store TLS certificates
+                    _enable_plugin "barbican"
+                    _enable_plugin "heat"
+                    ;;
                 "python-neutronclient")
                     _append_config_line "LIBS_FROM_GIT+=python-neutronclient"
                     ;;
