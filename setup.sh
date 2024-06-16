@@ -167,7 +167,9 @@ function _disable_service {
 }
 
 function _append_config_line {
-    echo "$1" | tee --append "$LOCAL_CONFIG_PATH"
+    if ! grep -q "$1" "$LOCAL_CONFIG_PATH"; then
+        echo "$1" | tee --append "$LOCAL_CONFIG_PATH"
+    fi
 }
 
 function _disable_ipv6 {
