@@ -47,7 +47,7 @@ jobs:
           MYSQL_PASSWORD: root
         run: ./setup.sh
   check-e2e-rocky:
-    runs-on: macos-12
+    runs-on: vm-self-hosted
     steps:
       - uses: actions/checkout@v4.2.2
       - uses: ./.github/actions/vagrant-setup
@@ -64,9 +64,8 @@ jobs:
       - name: Check HW resources
         if: failure()
         run: |
-          vm_stat
-          top -l 1 -n 0
           VBoxManage list runningvms --long
+          cat ~/VirtualBox\ VMs/*/Logs/*.log
   check-bash-shellspec:
     name: Run BDD shell specs
     runs-on: ubuntu-latest
