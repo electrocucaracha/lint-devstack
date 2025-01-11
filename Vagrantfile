@@ -32,11 +32,12 @@ no_proxy = ENV["NO_PROXY"] || ENV["no_proxy"] || "127.0.0.1,localhost"
   no_proxy += ",10.0.2.#{i}"
 end
 
-public_nic = `ip r get 1.1.1.1 | awk 'NR==1{print $5}'`.strip! || "eno1"
-public_cidr = `ip r | grep "dev $(ip r get 1.1.1.1 | awk 'NR==1{print $5}') .* scope link" | awk '{print $1}'`.strip! || "192.168.1.0/24"
-public_gw = `ip r | grep "^default" | awk 'NR==1{print $3}' `.strip! || "192.168.1.1"
+# NOTE: Execute awk commands results in no outputs in stdout
+public_nic = `ip r get 1.1.1.1 | head -n 1 | cut -d ' ' -f 5`.strip! || "eth0"
+public_cidr = `ip r | grep "dev $(ip r get 1.1.1.1 | head -n 1 | cut -d ' ' -f 5) .* scope link" | cut -d ' ' -f 1`.strip! || "192.168.0.0/24"
+public_gw = `ip r | grep "^default" | head -n 1 | cut -d ' ' -f 3`.strip! || "192.168.0.1"
 *prefix, _ = public_gw.split(".")
-vb_public_nic = `VBoxManage list bridgedifs | grep "^Name:.*#{public_nic}" | awk -F "Name:[ ]*" '{ print $2}'`.strip! if which "VBoxManage"
+vb_public_nic = `VBoxManage list bridgedifs | grep "^Name:.*#{public_nic}" | cut -d "Name:[ ]*" -f 2`.strip! if which "VBoxManage"
 
 qemu_version = ""
 qemu_version = `qemu-system-x86_64 --version | perl -pe '($_)=/([0-9]+([.][0-9]+)+)/'` if which "qemu-system-x86_64"
@@ -165,7 +166,8 @@ Vagrant.configure("2") do |config|
     sh.env = {
       DEBUG: "true",
       OS_DISABLE_SVC_LIST: "tempest",
-      OS_PROJECT_LIST: "magnum,magnum-ui",
+      OS_PROJECT_LIST: ENV.fetch("OS_PROJECT_LIST", "magnum,magnum-ui"),
+      LINT_DEVSTACK_IMAGE_URLS: "http://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img,",
       LINT_DEVSTACK_LOGDIR: "/var/log/stack",
       # Range not used on the local network
       LINT_DEVSTACK_FLOATING_RANGE: ENV.fetch("FLOATING_RANGE", public_cidr.to_s),
