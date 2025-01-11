@@ -71,7 +71,6 @@ if ! command -v vagrant >/dev/null; then
 fi
 
 cat <<EOT >.distros_supported.yml
----
 # SPDX-license-identifier: Apache-2.0
 ##############################################################################
 # Copyright (c) 2019 - $(date '+%Y')
@@ -80,7 +79,6 @@ cat <<EOT >.distros_supported.yml
 # which accompanies this distribution, and is available at
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
-
 EOT
 
 echo "rocky:" >>.distros_supported.yml

@@ -1,9 +1,13 @@
 # Lint Devstack
+
 <!-- markdown-link-check-disable-next-line -->
+
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![GitHub Super-Linter](https://github.com/electrocucaracha/lint-devstack/workflows/Lint%20Code%20Base/badge.svg)](https://github.com/marketplace/actions/super-linter)
 [![Ruby Style Guide](https://img.shields.io/badge/code_style-rubocop-brightgreen.svg)](https://github.com/rubocop/rubocop)
+
 <!-- markdown-link-check-disable-next-line -->
+
 ![visitors](https://visitor-badge.laobi.icu/badge?page_id=electrocucaracha.lint-devstack)
 [![Scc Code Badge](https://sloc.xyz/github/electrocucaracha/lint-devstack?category=code)](https://github.com/boyter/scc/)
 [![Scc COCOMO Badge](https://sloc.xyz/github/electrocucaracha/lint-devstack?category=cocomo)](https://github.com/boyter/scc/)
@@ -17,7 +21,7 @@ and use a local IDE during development.
 ## Setup
 
 This project uses [Vagrant tool][2] for provisioning Virtual Machines
-automatically. It's highly recommended to use the  *setup.sh* script
+automatically. It's highly recommended to use the _setup.sh_ script
 of the [bootstrap-vagrant project][3] for installing Vagrant
 dependencies and plugins required for its project. The script
 supports two Virtualization providers (Libvirt and VirtualBox).
@@ -38,11 +42,11 @@ instruction allows its remote execution:
 
 ### Environment variables
 
-| Name              | Default     | Description                                 |
-|:------------------|:------------|:--------------------------------------------|
-| OS_PROJECT_LIST   |             | List of OpenStack projects to be enabled    |
-| DEVSTACK_RELEASE  | stable/yoga | Devstack Release                            |
-| PASSWORD          |             | Password used for all the Devstack services |
+| Name             | Default     | Description                                 |
+| :--------------- | :---------- | :------------------------------------------ |
+| OS_PROJECT_LIST  |             | List of OpenStack projects to be enabled    |
+| DEVSTACK_RELEASE | stable/yoga | Devstack Release                            |
+| PASSWORD         |             | Password used for all the Devstack services |
 
 [1]: http://docs.openstack.org/developer/devstack/
 [2]: https://www.vagrantup.com/

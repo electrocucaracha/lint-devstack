@@ -7,3 +7,5 @@ OVMF.fd
 *.log
 *.dic
 override_config.yml
+node_modules/
+package*.json
