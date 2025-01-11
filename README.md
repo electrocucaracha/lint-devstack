@@ -42,11 +42,11 @@ instruction allows its remote execution:
 
 ### Environment variables
 
-| Name             | Default     | Description                                 |
-| :--------------- | :---------- | :------------------------------------------ |
-| OS_PROJECT_LIST  |             | List of OpenStack projects to be enabled    |
-| DEVSTACK_RELEASE | stable/yoga | Devstack Release                            |
-| PASSWORD         |             | Password used for all the Devstack services |
+| Name             | Default       | Description                                 |
+| :--------------- | :------------ | :------------------------------------------ |
+| OS_PROJECT_LIST  |               | List of OpenStack projects to be enabled    |
+| DEVSTACK_RELEASE | stable/2024.2 | Devstack Release                            |
+| PASSWORD         |               | Password used for all the Devstack services |
 
 [1]: http://docs.openstack.org/developer/devstack/
 [2]: https://www.vagrantup.com/
