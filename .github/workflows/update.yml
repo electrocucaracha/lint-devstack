@@ -19,11 +19,11 @@ jobs:
       pull-requests: write # for technote-space/create-pr-action to create a PR
     runs-on: vm-self-hosted
     steps:
-      - uses: actions/checkout@v4.2.2
-      - uses: actions/setup-python@v5.3.0
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # 4.2.2
+      - uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b # 5.3.0
         with:
           python-version: "^3.10"
-      - uses: technote-space/create-pr-action@v2.1.4
+      - uses: technote-space/create-pr-action@91114507cf92349bec0a9a501c2edf1635427bc5 # 2.1.4
         with:
           EXECUTE_COMMANDS: |
             ./ci/update_distros.sh
@@ -34,8 +34,8 @@ jobs:
   check-dictionary:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4.2.2
-      - uses: technote-space/create-pr-action@v2.1.4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # 4.2.2
+      - uses: technote-space/create-pr-action@91114507cf92349bec0a9a501c2edf1635427bc5 # 2.1.4
         with:
           EXECUTE_COMMANDS: |
             sudo apt-get update
@@ -54,3 +54,18 @@ jobs:
           COMMIT_NAME: "spellchecker bot"
           PR_BRANCH_NAME: "versions-update-${PR_ID}"
           PR_TITLE: "chore: update dictionary"
+  check-github-actions:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # for technote-space/create-pr-action to push code
+      pull-requests: write # for technote-space/create-pr-action to create a PR
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # 4.2.2
+      - uses: technote-space/create-pr-action@91114507cf92349bec0a9a501c2edf1635427bc5 # 2.1.4
+        with:
+          EXECUTE_COMMANDS: |
+            ./ci/update_versions.sh
+          COMMIT_MESSAGE: "Update GitHub Actions"
+          COMMIT_NAME: "gh versions bot"
+          PR_BRANCH_NAME: "gh-versions-update-${PR_ID}"
+          PR_TITLE: "chore: update gh"
