@@ -14,6 +14,7 @@ lint:
 	sudo -E $(DOCKER_CMD) run --rm -v $$(pwd):/tmp/lint \
 	-e RUN_LOCAL=true \
 	-e LINTER_RULES_PATH=/ \
+	-e VALIDATE_SHELL_SHFMT=false \
 	ghcr.io/super-linter/super-linter
 	tox -e lint
 
