@@ -43,6 +43,7 @@ VAGRANT_CMD+=" $(command -v vagrant)"
 VAGRANT_CMD_UP="$VAGRANT_CMD up --no-destroy-on-error"
 
 info "Define target node"
+# editorconfig-checker-disable
 cat <<EOL >../override_config.yml
 name: devstack
 os:
@@ -64,6 +65,7 @@ pmem:
       path: /dev/shm
       size: 2G
 EOL
+# editorconfig-checker-enable
 destroy_vm
 
 info "Provision target node"
