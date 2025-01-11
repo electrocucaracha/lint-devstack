@@ -32,6 +32,19 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # 4.2.2
+      - name: Setup a Supported python version # NOTE: https://docs.openstack.org/tempest/latest/supported_version.html
+        uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b # 5.3.0
+        id: python3-setup
+        with:
+          python-version: "3.11" # NOTE: distutils deprecated on Python 3.12+ (https://peps.python.org/pep-0632/)
+      - name: Create symlink
+        run: |
+          version=${{ steps.python3-setup.outputs.python-version }}
+          path="/usr/bin/python${version%\.*}"
+          sudo rm -f "$path"
+          sudo ln -s ${{ steps.python3-setup.outputs.python-path }} "$path"
+      - name: Uninstall postgresql package # NOTE: This has a conflict with Azure packages (https://github.com/actions/runner-images/blob/main/images/ubuntu/Ubuntu2204-Readme.md#postgresql)
+        run: sudo apt-get --purge -y remove postgresql*
       - name: Deploy services
         env:
           MYSQL_PASSWORD: root
@@ -40,6 +53,17 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # 4.2.2
+      - name: Setup a Supported python version # NOTE: https://docs.openstack.org/tempest/latest/supported_version.html
+        uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b # 5.3.0
+        id: python3-setup
+        with:
+          python-version: "3.11" # NOTE: distutils deprecated on Python 3.12+ (https://peps.python.org/pep-0632/)
+      - name: Create symlink
+        run: |
+          version=${{ steps.python3-setup.outputs.python-version }}
+          path="/usr/bin/python${version%\.*}"
+          sudo rm -f "$path"
+          sudo ln -s ${{ steps.python3-setup.outputs.python-path }} "$path"
       - name: Deploy services
         env:
           MYSQL_PASSWORD: root
