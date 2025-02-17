@@ -213,11 +213,13 @@ function _create_local_conf {
         pushd /opt/stack/devstack/
         cat <<EOL >"$LOCAL_CONFIG_PATH"
 [[local|localrc]]
+HOST_IP=$(ip route get 8.8.8.8 | grep "^8." | awk '{ print $7 }')
 SERVICE_DIR=$HOME/status
 GLOBAL_VENV=False
 LOGFILE=\$DATA_DIR/logs/stack.log
 VERBOSE=True
 IP_VERSION=4
+IPV6_ENABLED=False
 
 MYSQL_PASSWORD=${MYSQL_PASSWORD:-$PASSWORD}
 DATABASE_PASSWORD=${DATABASE_PASSWORD:-$PASSWORD}
