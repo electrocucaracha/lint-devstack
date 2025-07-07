@@ -14,29 +14,29 @@ set -o pipefail
 
 # info() - This function prints an information message in the standard output
 function info {
-    _print_msg "INFO" "$1"
-    echo "::notice::$1"
+	_print_msg "INFO" "$1"
+	echo "::notice::$1"
 }
 
 function _print_msg {
-    echo "$(date +%H:%M:%S) - $1: $2"
+	echo "$(date +%H:%M:%S) - $1: $2"
 }
 
 function destroy_vm {
-    info "Destroying Devstack instance..."
-    # NOTE: Shutdown instances avoids VBOX_E_INVALID_OBJECT_STATE issues
-    $VAGRANT_CMD halt
-    $VAGRANT_CMD destroy -f
+	info "Destroying Devstack instance..."
+	# NOTE: Shutdown instances avoids VBOX_E_INVALID_OBJECT_STATE issues
+	$VAGRANT_CMD halt
+	$VAGRANT_CMD destroy -f
 }
 
 if ! command -v vagrant >/dev/null; then
-    # NOTE: Shorten link -> https://github.com/electrocucaracha/bootstrap-vagrant
-    curl -fsSL http://bit.ly/initVagrant | PROVIDER=libvirt bash
+	# NOTE: Shorten link -> https://github.com/electrocucaracha/bootstrap-vagrant
+	curl -fsSL http://bit.ly/initVagrant | PROVIDER=libvirt bash
 fi
 
 VAGRANT_CMD=""
 if [[ ${SUDO_VAGRANT_CMD:-false} == "true" ]]; then
-    VAGRANT_CMD="sudo -H"
+	VAGRANT_CMD="sudo -H"
 fi
 VAGRANT_CMD+=" $(command -v vagrant)"
 # shellcheck disable=SC2034
