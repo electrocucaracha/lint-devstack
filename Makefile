@@ -15,13 +15,14 @@ lint:
 	-e RUN_LOCAL=true \
 	-e LINTER_RULES_PATH=/ \
 	-e VALIDATE_SHELL_SHFMT=false \
+	-e VALIDATE_BIOME_FORMAT=false \
 	ghcr.io/super-linter/super-linter
 	tox -e lint
 
 .PHONY: fmt
 fmt:
 	command -v shfmt > /dev/null || curl -s "https://i.jpillora.com/mvdan/sh!!?as=shfmt" | bash
-	shfmt -l -w -s .
+	shfmt -l -w -s  -i 4 .
 	command -v yamlfmt > /dev/null || curl -s "https://i.jpillora.com/google/yamlfmt!!" | bash
 	yamlfmt -dstar **/*.{yaml,yml}
 	command -v prettier > /dev/null || npm install prettier
