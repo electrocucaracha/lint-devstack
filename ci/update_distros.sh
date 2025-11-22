@@ -87,7 +87,6 @@ echo "rocky:" >>.distros_supported.yml
 _vagrant_pull "9" "community/rockylinux-9"
 echo "ubuntu:" >>.distros_supported.yml
 _vagrant_pull "jammy" "generic/ubuntu2204"
-_vagrant_pull "focal" "generic/ubuntu2004"
 
 if [ "$msg" ]; then
     echo -e "$msg"
