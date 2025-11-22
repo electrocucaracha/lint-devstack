@@ -195,7 +195,7 @@ function _manage_deps {
 
 function _clone_repo {
     if [ ! -d /opt/stack/devstack ]; then
-        sudo -E git clone --depth 1 -b "${DEVSTACK_RELEASE:-stable/2024.2}" "$GIT_REPO_HOST/devstack" /opt/stack/devstack
+        sudo -E git clone --depth 1 -b "${DEVSTACK_RELEASE:-stable/2025.2}" "$GIT_REPO_HOST/devstack" /opt/stack/devstack
         sudo chown -R "$USER" /opt/stack/
     fi
 }
