@@ -1,6 +1,7 @@
 boyter
 brightgreen
 COCOMO
+conf
 DEVSTACK
 electrocucaracha
 fsSL
@@ -17,11 +18,14 @@ opensource
 OpenStack
 OpenStack's
 pre
+RabbitMQ
 rubocop
 Scc
 sloc
 src
+SVC
 svg
 vagrantup
 VirtualBox
+VM
 xyz
