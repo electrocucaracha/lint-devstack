@@ -8,8 +8,8 @@
 ##############################################################################
 rocky:
   9:
-    name: community/rockylinux-9
-    version: "1.0.0"
+    name: rockylinux/9
+    version: "6.0.0"
 ubuntu:
   jammy:
     name: generic/ubuntu2204

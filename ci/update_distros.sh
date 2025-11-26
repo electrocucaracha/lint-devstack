@@ -84,7 +84,7 @@ cat <<EOT >.distros_supported.yml
 EOT
 
 echo "rocky:" >>.distros_supported.yml
-_vagrant_pull "9" "community/rockylinux-9"
+_vagrant_pull "9" "rockylinux/9"
 echo "ubuntu:" >>.distros_supported.yml
 _vagrant_pull "jammy" "generic/ubuntu2204"
 
