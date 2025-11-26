@@ -14,28 +14,41 @@
 
 ## Overview
 
-This project offers an automated process to provision a [Devstack][1]
-development environment for working with OpenStack projects. The
-Virtual Machine is configured to share the OpenStack's projects source
-code to host machine. As result, it's possible to run system tests
-and use a local IDE during development.
+This project offers an automated process to provision a
+[Devstack][1] development environment for working with OpenStack
+projects.
+The Virtual Machine is configured to share the OpenStack's projects
+source code to host machine.
+As result, it's possible to run system tests and use a local IDE
+during development.
 
 ### Key Features
 
-- **Automated Provisioning**: Uses Vagrant and shell scripts to automate the complete DevStack setup
-- **Multi-Project Support**: Enables flexible installation of 100+ OpenStack projects and plugins
-- **Development-Ready**: Provides shared source code between host and VM for seamless IDE integration
-- **Service Management**: Dynamically enables/disables services based on project requirements
-- **Configuration Flexibility**: Supports custom environment variables for advanced configuration
-- **Multi-Distribution Support**: Compatible with Ubuntu, Debian, and other Linux distributions
+- **Automated Provisioning**:
+  Uses Vagrant and shell scripts to automate the complete DevStack
+  setup
+- **Multi-Project Support**:
+  Enables flexible installation of 100+ OpenStack projects and
+  plugins
+- **Development-Ready**:
+  Provides shared source code between host and VM for seamless IDE
+  integration
+- **Service Management**:
+  Dynamically enables/disables services based on project requirements
+- **Configuration Flexibility**:
+  Supports custom environment variables for advanced configuration
+- **Multi-Distribution Support**:
+  Compatible with Ubuntu, Debian, and other Linux distributions
 
 ## Setup
 
 This project uses [Vagrant tool][2] for provisioning Virtual Machines
-automatically. It's highly recommended to use the _setup.sh_ script
-of the [bootstrap-vagrant project][3] for installing Vagrant
-dependencies and plugins required for its project. The script
-supports two Virtualization providers (Libvirt and VirtualBox).
+automatically.
+It's highly recommended to use the _setup.sh_ script of the
+[bootstrap-vagrant project][3] for installing Vagrant dependencies
+and plugins required for its project.
+The script supports two Virtualization providers (Libvirt and
+VirtualBox).
 
     curl -fsSL http://bit.ly/initVagrant | PROVIDER=libvirt bash
 
@@ -46,8 +59,8 @@ following instruction:
 
 ## Quick setup
 
-It's possible to run this project without having to clone it. The following
-instruction allows its remote execution:
+It's possible to run this project without having to clone it.
+The following instruction allows its remote execution:
 
     curl -fsSL https://raw.githubusercontent.com/electrocucaracha/lint-devstack/master/setup.sh | OS_PROJECT_LIST=octavia bash
 
@@ -69,9 +82,18 @@ instruction allows its remote execution:
 
 #### Notes on Environment Variables
 
-- **OS_PROJECT_LIST**: Accepts project names from the [OpenStack Plugin Registry](https://docs.openstack.org/devstack/latest/plugin-registry.html). Multiple projects should be comma-separated (e.g., `OS_PROJECT_LIST=octavia,neutron,heat`)
-- **Custom Configuration**: Any variable prefixed with `LINT_DEVSTACK_` will be automatically added to the Devstack local.conf file with the prefix removed (e.g., `LINT_DEVSTACK_OFFLINE=True` becomes `OFFLINE=True`)
-- **Password Management**: Individual password variables override the generic `PASSWORD` variable for specific components
+- **OS_PROJECT_LIST**:
+  Accepts project names from the
+  [OpenStack Plugin Registry](https://docs.openstack.org/devstack/latest/plugin-registry.html).
+  Multiple projects should be comma-separated
+  (e.g., `OS_PROJECT_LIST=octavia,neutron,heat`)
+- **Custom Configuration**:
+  Any variable prefixed with `LINT_DEVSTACK_` will be automatically
+  added to the Devstack local.conf file with the prefix removed
+  (e.g., `LINT_DEVSTACK_OFFLINE=True` becomes `OFFLINE=True`)
+- **Password Management**:
+  Individual password variables override the generic `PASSWORD`
+  variable for specific components
 
 [1]: http://docs.openstack.org/developer/devstack/
 [2]: https://www.vagrantup.com/
