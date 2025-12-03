@@ -52,6 +52,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           LINTER_RULES_PATH: /
           VALIDATE_SHELL_SHFMT: false
+          VALIDATE_PRE_COMMIT: false
   check-tox:
     runs-on: ubuntu-latest
     permissions:

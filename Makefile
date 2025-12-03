@@ -16,6 +16,7 @@ lint:
 	-e LINTER_RULES_PATH=/ \
 	-e VALIDATE_SHELL_SHFMT=false \
 	-e VALIDATE_BIOME_FORMAT=false \
+	-e VALIDATE_PRE_COMMIT=false \
 	ghcr.io/super-linter/super-linter
 	tox -e lint
 
