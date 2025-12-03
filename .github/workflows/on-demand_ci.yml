@@ -77,6 +77,8 @@ jobs:
           OS: rocky
           RELEASE: 9
         run: |
+          vagrant box add --name rockylinux/9 --provider virtualbox https://dl.rockylinux.org/vault/rocky/9.6/images/x86_64/Rocky-9-Vagrant-Vbox.latest.x86_64.box
+          sed -i 's|version: .*|version: "0"|g' distros_supported.yml
           cd ci
           ./bootstrap.sh
       - name: Check HW resources
