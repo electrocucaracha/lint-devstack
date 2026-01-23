@@ -41,7 +41,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Setup a Supported python version # NOTE: https://docs.openstack.org/tempest/latest/supported_version.html
-        uses: actions/setup-python@83679a892e2d95755f2dac6acb0bfd1e9ac5d548 # 6.1.0
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # 6.2.0
         id: python3-setup
         with:
           python-version: "3.11" # NOTE: distutils deprecated on Python 3.12+ (https://peps.python.org/pep-0632/)
