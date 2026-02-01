@@ -10,7 +10,7 @@ name: Scheduled All Linux Distros Supported verification
 # yamllint disable-line rule:truthy
 on:
   schedule:
-    - cron: "0 0 * * 1"
+    - cron: "0 0 3 * *"
   workflow_dispatch:
 jobs:
   generate-json-matrix:
