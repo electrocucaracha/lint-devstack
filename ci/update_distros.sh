@@ -45,9 +45,9 @@ function _get_box_current_version {
 
 function _get_box_arch {
     case "$(uname -m)" in
-        x86_64) echo "amd64" ;;
-        aarch64) echo "arm64" ;;
-        *) uname -m ;;
+    x86_64) echo "amd64" ;;
+    aarch64) echo "arm64" ;;
+    *) uname -m ;;
     esac
 }
 
