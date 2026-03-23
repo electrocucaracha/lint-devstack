@@ -37,7 +37,7 @@ public_nic = `ip r get 1.1.1.1 | head -n 1 | cut -d ' ' -f 5`.strip! || "eth0"
 public_cidr = `ip r | grep "dev $(ip r get 1.1.1.1 | head -n 1 | cut -d ' ' -f 5) .* scope link" | cut -d ' ' -f 1`.strip! || "192.168.0.0/24"
 public_gw = `ip r | grep "^default" | head -n 1 | cut -d ' ' -f 3`.strip! || "192.168.0.1"
 *prefix, _ = public_gw.split(".")
-vb_public_nic = `VBoxManage list bridgedifs | grep "^Name:.*#{public_nic}" | cut -d "Name:[ ]*" -f 2`.strip! if which "VBoxManage"
+vb_public_nic = `VBoxManage list bridgedifs | grep "^Name:.*#{public_nic}" | awk '{$1=""; sub(/^[[:space:]]+/, ""); print}'`.strip! if which "VBoxManage"
 
 qemu_version = ""
 qemu_version = `qemu-system-x86_64 --version | perl -pe '($_)=/([0-9]+([.][0-9]+)+)/'` if which "qemu-system-x86_64"
