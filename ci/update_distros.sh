@@ -27,9 +27,9 @@ function _get_box_current_version {
         version=$(grep "^${name} .*$PROVIDER" ./ci/pinned_vagrant_boxes.txt | awk '{ print $2 }')
     else
         until [ "$version" ]; do
-            metadata="$(curl -s "https://app.vagrantup.com/api/v1/box/$name")"
+            metadata="$(curl -s "https://vagrantcloud.com/api/v2/vagrant/${name%/*}/${name#*/}")"
             if [ "$metadata" ]; then
-                version="$(echo "$metadata" | python -c 'import json,sys;print(json.load(sys.stdin)["current_version"]["version"])')"
+                version="$(echo "$metadata" | python3 -c 'import json,sys;print(json.load(sys.stdin)["current_version"]["version"])')"
                 break
             elif [ ${attempt_counter} -eq ${max_attempts} ]; then
                 echo "Max attempts reached"
@@ -43,13 +43,23 @@ function _get_box_current_version {
     echo "${version#*v}"
 }
 
+function _get_box_arch {
+    case "$(uname -m)" in
+        x86_64) echo "amd64" ;;
+        aarch64) echo "arm64" ;;
+        *) uname -m ;;
+    esac
+}
+
 function _vagrant_pull {
     local alias="$1"
     local name="$2"
+    local arch
 
     version=$(_get_box_current_version "$name")
+    arch=$(_get_box_arch)
 
-    if [ "$(curl "https://app.vagrantup.com/${name%/*}/boxes/${name#*/}/versions/$version/providers/$PROVIDER.box" -o /dev/null -w '%{http_code}\n' -s)" == "302" ] && [ "$(vagrant box list | grep -c "$name .*$PROVIDER, $version")" != "1" ]; then
+    if [ "$(curl "https://vagrantcloud.com/${name%/*}/boxes/${name#*/}/versions/$version/providers/$PROVIDER/$arch/vagrant.box" -o /dev/null -w '%{http_code}\n' -s)" == "302" ] && [ "$(vagrant box list | grep -c "$name .*$PROVIDER, $version")" != "1" ]; then
         vagrant box remove --provider "$PROVIDER" --all --force "$name" || :
         vagrant box add --provider "$PROVIDER" --box-version "$version" "$name"
     elif [ "$(vagrant box list | grep -c "$name .*$PROVIDER, $version")" == "1" ]; then
