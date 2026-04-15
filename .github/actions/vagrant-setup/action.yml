@@ -12,7 +12,7 @@ runs:
   using: "composite"
   steps:
     - name: Cache Vagrant boxes
-      uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # 5.0.3
+      uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # 5.0.5
       with:
         path: ~/.vagrant.d/boxes
         key: ${{ runner.os }}-vagrant-ubuntu-bionic-${{ hashFiles('distros_supported.yml') }}
